@@ -98,6 +98,10 @@ export function ScreenshotScan({ players, onApply }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const originRef = useRef<CardResult[]>([]);
   const dragRef = useRef<DragState | null>(null);
+  // regions changes on every pointermove, and the scan effect depends on it, so
+  // without this flag a drag re-dispatches the whole OCR pass per frame. Scan
+  // once the drag settles instead.
+  const [dragging, setDragging] = useState(false);
 
   const teams = useMemo(
     () => [...new Set(players.map((player) => player.team))].sort(),
@@ -174,6 +178,7 @@ export function ScreenshotScan({ players, onApply }: Props) {
     event.currentTarget.setPointerCapture(event.pointerId);
     const point = toFraction(event);
     dragRef.current = { ...hit, startX: point.x, startY: point.y };
+    setDragging(true);
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
@@ -207,6 +212,7 @@ export function ScreenshotScan({ players, onApply }: Props) {
 
   const onPointerUp = () => {
     dragRef.current = null;
+    setDragging(false);
   };
 
   useEffect(() => {
@@ -224,7 +230,7 @@ export function ScreenshotScan({ players, onApply }: Props) {
   }, [frame, cards, regions]);
 
   useEffect(() => {
-    if (!frame) return;
+    if (!frame || dragging) return;
     let cancelled = false;
     // Tesseract runs outside React, so this effect is the sync point with an
     // external system: busy/cards must be reset before the scan is dispatched.
@@ -278,7 +284,7 @@ export function ScreenshotScan({ players, onApply }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [frame, players, teams, regions]);
+  }, [frame, players, teams, regions, dragging]);
 
   const duplicates = useMemo(() => {
     if (!cards) return new Set<string>();
@@ -479,12 +485,18 @@ export function ScreenshotScan({ players, onApply }: Props) {
                   <div className="shot-card-picks">
                     <select
                       value={card.team}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        // Same rule as the round picker: a single-year team
+                        // resolves its year immediately, anything else waits
+                        // for the manual pick.
+                        const years = event.target.value
+                          ? yearsFor(event.target.value, players)
+                          : [];
                         updateCard(index, {
                           team: event.target.value,
-                          year: null,
-                        })
-                      }
+                          year: years.length === 1 ? years[0] : null,
+                        });
+                      }}
                     >
                       <option value="">— команда —</option>
                       {teams.map((team) => (

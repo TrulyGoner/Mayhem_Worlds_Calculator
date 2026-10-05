@@ -16,8 +16,8 @@ type Props = {
   onTogglePicked: (player: Player) => void;
   onCandidates: (players: Player[]) => void;
   // Filled slots coming from the screenshot import (ScreenshotScan). The
-  // component owns its slots, so an external fill must ride in as prop + effect
-  // rather than mutate the roster state.
+  // component owns its slots, so the external fill seeds initial state instead
+  // of mutating the roster state later.
   prefill: TeamSlot[] | null;
   onSlotsChange?: (slots: Slot[]) => void;
 };
