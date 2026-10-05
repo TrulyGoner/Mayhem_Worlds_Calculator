@@ -226,6 +226,9 @@ export function ScreenshotScan({ players, onApply }: Props) {
   useEffect(() => {
     if (!frame) return;
     let cancelled = false;
+    // Tesseract runs outside React, so this effect is the sync point with an
+    // external system: busy/cards must be reset before the scan is dispatched.
+    // oxlint-disable-next-line react/set-state-in-effect
     setBusy(true);
     setCards(null);
     (async () => {

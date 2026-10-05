@@ -100,6 +100,11 @@ export function TeamPicker({
   prefill,
   onSlotsChange,
 }: Props) {
+  // The screenshot import fills all blocks at once, and it can only reach this
+  // component while it is mounting: App renders TeamPicker and ScreenshotScan in
+  // the same ternary, so prefill can never change while this is mounted. The
+  // queries mirror the teams so the inputs read back the chosen team names.
+  // Seeding initial state avoids a mount-time render cascade.
   const [slots, setSlots] = useState<Slot[]>(() =>
     prefill ? prefill.map((slot) => ({ ...slot })) : EMPTY_SLOTS,
   );
