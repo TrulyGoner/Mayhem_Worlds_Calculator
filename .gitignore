@@ -14,6 +14,11 @@ dist-ssr
 
 .codegraph
 
+# Local-only sources: backup logo set (app serves public/teams) and the
+# uncompressed tessdata model (app serves public/tessdata/*.gz)
+/eng.traineddata
+/assets-backup
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

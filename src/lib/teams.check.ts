@@ -101,8 +101,8 @@ assert.deepEqual(
   ["Bin", "Xun", "Wei", "Knight", "Elk", "ON"],
 );
 
-// Every derived score must be a real number: a missing input field used to slip
-// through as undefined and quietly disable the score sort.
+// Every derived score must be a real number: a missing input field arrives as
+// undefined and silently disables the score sort.
 for (const player of players) {
   assert.ok(
     Number.isFinite(player.score),
@@ -726,8 +726,6 @@ assert.deepEqual(
 }
 
 {
-  // Combos used to be read from worlds_analysis.json, which generated them by
-  // permuting players: one trio took the top six rows with an identical score.
   // A combo is a set, so the list must never contain the same set twice.
   const { pairs, trios } = buildCombos(statPlayers);
   assert.ok(pairs.length > 12, `expected a real ranking, got ${pairs.length}`);
@@ -759,8 +757,7 @@ assert.deepEqual(
       assert.equal(combo.players.length, size, `${label} has the wrong size`);
     }
 
-    // Descending, and on the same scale as a real roster score — the old file
-    // reported 99.7 for a trio the ratings put at 89.
+    // Descending, and on the same scale as a real roster score.
     assert.deepEqual(
       list.map((combo) => Math.round(combo.power * 10)),
       list

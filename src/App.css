@@ -521,8 +521,6 @@
   border-color: #0ac8b9;
   background: #0b4250;
 }
-/* The role/year/score line under a candidate name was 10px, below the floor the
-   rest of the panel holds to, so the weakest candidate looked the dimmest. */
 .current-options small {
   margin-top: 3px;
   color: var(--text-body);
@@ -622,8 +620,8 @@
 .table-row:hover {
   background: rgba(0, 90, 130, 0.36);
 }
-/* Ranking rows are paginated, so this used to be :first-of-type/:nth-of-type
-   and marked rows 1,3,4 of every page. Driven by the global rank instead. */
+/* Rows are paginated, so the stripe has to follow the global rank, not the
+   row's position on its page. */
 .table-row.top {
   border-left: 3px solid #c89b3c;
 }
@@ -696,10 +694,8 @@
   max-width: var(--shell-max);
   margin: 24px auto 0;
 }
-/* Two tiles per row at the shell width, like every other tab. An earlier 1080px
-   cap looked tidier but broke two things at once: the tab was narrower than its
-   siblings, and the resulting 511px tile was narrower than the widest real trio
-   needs (~515px), so those rows wrapped. */
+/* Two tiles per row at the shell width: a narrower cap makes the tile
+   narrower than the widest real trio needs, and those rows wrap. */
 .combo-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -761,8 +757,7 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-/* The chip plate was nearly the same value as the row behind it, so the members
-   read as loose text. A visible gold edge separates plate from row. */
+/* A visible gold edge separates the chip plate from the row behind it. */
 .synergy-member-chip {
   display: inline-flex;
   align-items: center;
@@ -791,8 +786,7 @@
   color: var(--text-gold-primary);
   font-size: 13px;
 }
-/* The formula is the part that was unreadable: muted grey on dark blue at 10px.
-   Bonuses and penalties get their own colour so the signs read at a glance. */
+/* Bonuses and penalties get their own colour so the signs read at a glance. */
 .synergy-formula-breakdown {
   display: flex;
   gap: 10px;
@@ -1498,8 +1492,7 @@
   margin: 0 3px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
 }
-/* The empty box had no rule for its own button class, so the UA default (white)
-   leaked through. Skin both file-picker and apply buttons the same way. */
+/* The empty box needs its own rule, or the UA default white leaks through. */
 .shot-browse,
 .shot-apply {
   background: linear-gradient(180deg, #1e2832 0%, #0d1622 100%);
