@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import type { Player, Role } from "../types/game.ts";
 import { playerPhoto, teamLogo } from "./logos.ts";
-import { withTies } from "./scoring.ts";
+import { calculateTeamScore, scoreBreakdown, withTies } from "./scoring.ts";
 import { freeYears, inferYearFromRoster, rosterFor, yearsFor } from "./teams.ts";
 import { bestTeamMatch, pickYear } from "./fuzzy.ts";
 
@@ -173,6 +173,79 @@ assert.deepEqual(
 // Cut lands on a clean boundary: nothing extra is pulled in.
 const clean = [{ gain: 3 }, { gain: 2 }, { gain: 1 }, { gain: 0.5 }];
 assert.deepEqual(withTies(clean, 2, byGain).map(byGain), [3, 2]);
+
+// Lineup strength carries two dispersion terms on top of the role-weighted
+// average. They read the spread of the ratings, never the identity of the
+// players, so the invariants below are about shape: which roster sizes produce a
+// net bonus, and where the two ceilings stop cancelling each other out.
+{
+  const at = (role: Role, score: number): Player => ({
+    id: `${role}-${score}`,
+    name: `${role}-${score}`,
+    role,
+    score,
+    year: 2024,
+    team: "Check",
+  });
+
+  assert.deepEqual(
+    scoreBreakdown([]),
+    { power: 0, base: 0, carryBonus: 0, weakPenalty: 0, weakRole: null },
+    "an empty lineup must score 0, not NaN",
+  );
+
+  // The role weights sum to 1, so an all-equal lineup scores exactly its own
+  // rating with no dispersion either way. This pins the weight table too.
+  const flat = [
+    at("TOP", 90),
+    at("JUNGLE", 90),
+    at("MID", 90),
+    at("ADC", 90),
+    at("SUPPORT", 90),
+  ];
+  assert.equal(calculateTeamScore(flat), 90, "role weights must sum to 1");
+
+  // One player has no spread to measure, so power collapses onto base.
+  const solo = scoreBreakdown([at("MID", 90)]);
+  assert.equal(solo.power, solo.base);
+  assert.equal(solo.carryBonus, 0);
+  assert.equal(solo.weakPenalty, 0);
+  assert.equal(solo.weakRole, "MID");
+
+  // Two players: both terms measure the same half-gap with the same 0.2 factor,
+  // so they cancel exactly while the gap stays under the penalty ceiling.
+  const even = scoreBreakdown([at("TOP", 90), at("SUPPORT", 88)]);
+  assert.equal(even.power, even.base, "a near-even pair must net zero");
+  assert.ok(even.carryBonus > 0, "a spread pair must produce a nonzero bonus");
+  assert.ok(Math.abs(even.carryBonus - even.weakPenalty) < 1e-12);
+
+  // Past the ceiling the two caps differ (2.5 carry vs 2 penalty), so a lopsided
+  // pair keeps a positive delta instead of cancelling. The local dataset never
+  // reaches this range, which is why its pairs all read power === base.
+  const lopsided = scoreBreakdown([at("TOP", 100), at("SUPPORT", 60)]);
+  assert.equal(lopsided.carryBonus, 2.5);
+  assert.equal(lopsided.weakPenalty, 2);
+  assert.equal(Number((lopsided.power - lopsided.base).toFixed(10)), 0.5);
+  assert.equal(lopsided.weakRole, "SUPPORT");
+
+  // A third rating adds a carry term with no counterpart on the penalty side,
+  // which is where the dataset's negative trio deltas come from.
+  const trio = scoreBreakdown([at("TOP", 95), at("MID", 92), at("SUPPORT", 88)]);
+  assert.ok(trio.carryBonus > 0 && trio.weakPenalty > 0, "both terms must be live");
+  assert.ok(
+    trio.power < trio.base,
+    `a trio inside the caps must land below base, got ${trio.power - trio.base}`,
+  );
+  assert.equal(trio.weakRole, "SUPPORT");
+
+  // A substitute never outranks the starter it shares a role with.
+  const withSub = scoreBreakdown([at("MID", 88), at("MID", 96), at("TOP", 90)]);
+  assert.equal(
+    withSub.power,
+    scoreBreakdown([at("MID", 96), at("TOP", 90)]).power,
+    "a weaker substitute must not change the lineup score",
+  );
+}
 
 // Every logo path must point at a file that exists. A renamed or mistyped logo
 // otherwise fails silently as a broken image, and the dev server answers a miss

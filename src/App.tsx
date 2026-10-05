@@ -5,7 +5,12 @@ import { TeamPicker } from "./components/TeamPicker";
 import { FinalSummary } from "./components/FinalSummary";
 import { loadAnalysis } from "./data/analysis";
 import { loadPlayers } from "./data/ratings";
-import { calculateTeamScore, getScoreTone, withTies } from "./lib/scoring";
+import {
+  calculateTeamScore,
+  getScoreTone,
+  scoreBreakdown,
+  withTies,
+} from "./lib/scoring";
 import { playerPhoto } from "./lib/logos";
 import { ROLE_ICON } from "./lib/roles";
 import type { AnalysisData, Combo } from "./types/analysis";
@@ -192,6 +197,7 @@ function App() {
     [picked],
   );
   const currentTeamScore = useMemo(() => calculateTeamScore(picked), [picked]);
+  const currentBreakdown = useMemo(() => scoreBreakdown(picked), [picked]);
   // Screenshot -> round -> screenshot loop. roundOpen is flipped by the
   // screenshot's "apply" and by the pick/reroll that ends a round. It cannot be
   // derived from roundCandidates: those come from TeamPicker, which only mounts
@@ -392,6 +398,16 @@ function App() {
                 {currentTeamScore.toFixed(1)}
               </strong>
             </div>
+            {picked.length >= 3 && (
+              <p className="muted">
+                База {currentBreakdown.base.toFixed(1)} · связка +
+                {currentBreakdown.carryBonus.toFixed(2)} · слабое звено −
+                {currentBreakdown.weakPenalty.toFixed(2)}
+                {currentBreakdown.weakRole
+                  ? ` (${currentBreakdown.weakRole})`
+                  : ""}
+              </p>
+            )}
             <div className="roster-list">
               {(["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as Role[]).map(
                 (role) => {
