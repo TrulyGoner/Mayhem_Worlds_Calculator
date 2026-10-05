@@ -1,0 +1,1799 @@
+:root {
+  --obsidian: #010a13;
+  --panel: #091428;
+  --panel-deep: #050d18;
+  --gold-dark: #785a28;
+  --gold: #c89b3c;
+  --gold-light: #f0e6d2;
+  --blue: #0ac8b9;
+  --blue-dark: #005a82;
+  --muted: #9aa9b8;
+  --line: rgba(120, 90, 40, 0.64);
+  --shell-max: 1560px;
+  /* Jura is already the UI face from index.css; reuse it instead of monospace. */
+  --font-ui: "Jura", "Segoe UI", system-ui, sans-serif;
+}
+
+.app-shell {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 20px clamp(16px, 3vw, 40px) 40px;
+  background:
+    radial-gradient(ellipse at 84% 8%, rgba(0, 90, 130, 0.23), transparent 28%),
+    radial-gradient(
+      ellipse at 8% 72%,
+      rgba(10, 200, 185, 0.07),
+      transparent 24%
+    ),
+    linear-gradient(180deg, #091428 0%, #010a13 72%);
+}
+.app-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.19;
+  background-image:
+    linear-gradient(rgba(240, 230, 210, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 230, 210, 0.025) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(to bottom, #000, transparent 82%);
+}
+.app-header,
+.tabs,
+.calculator-grid,
+.full-panel,
+.scanner-layout {
+  position: relative;
+  z-index: 1;
+}
+.app-header {
+  max-width: var(--shell-max);
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+.eyebrow,
+.section-label {
+  color: #c89b3c;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.app-header h1 {
+  margin: 2px 0;
+}
+.lol-title-legend {
+  padding: 2px 0;
+  display: inline-block;
+  position: relative;
+  color: #f0e6d2;
+  font-family: "Beaufort for LOL", "Philosopher", "Cinzel", serif;
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  background: linear-gradient(
+    180deg,
+    #fff 0%,
+    #f0e6d2 18%,
+    #c89b3c 55%,
+    #93732e 80%,
+    #463714 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 16px rgba(200, 155, 60, 0.25));
+}
+.app-header p,
+.muted {
+  margin: 0;
+  color: #b2bfca;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.header-score {
+  position: relative;
+  min-width: 112px;
+  padding: 14px 19px;
+  color: #aebdca;
+  background: linear-gradient(150deg, #132a3b, #07131f);
+  border: 1px solid var(--gold-dark);
+  clip-path: polygon(
+    9px 0,
+    100% 0,
+    100% calc(100% - 9px),
+    calc(100% - 9px) 100%,
+    0 100%,
+    0 9px
+  );
+  text-align: center;
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 230, 210, 0.09),
+    0 7px 20px rgba(0, 0, 0, 0.45);
+}
+.header-score::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  border: 1px solid rgba(200, 155, 60, 0.4);
+  clip-path: inherit;
+}
+/* Corner ticks, like the big panels' registration marks. */
+.header-score::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  pointer-events: none;
+  border: 1px solid rgba(10, 200, 185, 0.28);
+  clip-path: polygon(
+    0 0,
+    14px 0,
+    14px 1px,
+    1px 1px,
+    1px 14px,
+    0 14px,
+    0 0,
+    100% 0,
+    100% 14px,
+    calc(100% - 1px) 14px,
+    calc(100% - 1px) 1px,
+    calc(100% - 14px) 1px,
+    calc(100% - 14px) 0,
+    100% 0,
+    100% 100%,
+    calc(100% - 14px) 100%,
+    calc(100% - 14px) calc(100% - 1px),
+    calc(100% - 1px) calc(100% - 1px),
+    calc(100% - 1px) calc(100% - 14px),
+    100% calc(100% - 14px),
+    100% 100%,
+    0 100%,
+    0 calc(100% - 14px),
+    1px calc(100% - 14px),
+    1px calc(100% - 1px),
+    14px calc(100% - 1px),
+    14px 100%
+  );
+}
+.header-score span {
+  display: block;
+  color: #c89b3c;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.18em;
+}
+.header-score strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  font:
+    600 25px "Oswald",
+    "Arial Narrow",
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 10px rgba(10, 200, 185, 0.55);
+}
+
+.tabs {
+  max-width: var(--shell-max);
+  margin: 0 auto 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid #5d4722;
+}
+.tabs button {
+  position: relative;
+  padding: 12px 18px 14px;
+  color: #8fa1ae;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tabs button::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  left: 18px;
+  height: 2px;
+  background: transparent;
+}
+.tabs button:hover {
+  color: #f0e6d2;
+  background: linear-gradient(180deg, transparent, rgba(10, 200, 185, 0.08));
+}
+.tabs button.active {
+  color: #f0e6d2;
+  text-shadow: 0 0 12px rgba(10, 200, 185, 0.35);
+}
+.tabs button.active::after {
+  background: linear-gradient(90deg, transparent, #0ac8b9, transparent);
+  box-shadow: 0 0 10px #0ac8b9;
+}
+
+.panel,
+.combo-card {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 20, 40, 0.97),
+    rgba(1, 10, 19, 0.98)
+  );
+  border: 1px solid var(--gold-dark);
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 230, 210, 0.09),
+    0 7px 24px rgba(0, 0, 0, 0.58);
+}
+.panel::before,
+.combo-card::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid rgba(200, 155, 60, 0.19);
+}
+.panel::after,
+.combo-card::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 34px;
+  height: 7px;
+  border-top: 2px solid var(--gold);
+  border-left: 2px solid var(--gold);
+  pointer-events: none;
+}
+.panel {
+  padding: 25px;
+}
+.panel h2,
+.combo-intro h2 {
+  margin: 7px 0 21px;
+  color: #f0e6d2;
+  font:
+    600 25px "Oswald",
+    "Arial Narrow",
+    sans-serif;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.section-label {
+  position: relative;
+  z-index: 1;
+  color: #9dc2cc;
+}
+.calculator-grid {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.78fr) minmax(400px, 1.22fr);
+  gap: 20px;
+}
+/* Flex columns so the reserved body heights can stretch instead of leaving a
+   dead tail at the bottom of the shorter panels. */
+.calculator-grid > .panel {
+  display: flex;
+  flex-direction: column;
+}
+.roster-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 19px;
+  color: #b6c1c9;
+  font-size: 13px;
+}
+.roster-score strong {
+  font-size: 27px;
+}
+.elite {
+  color: #f0c55d !important;
+}
+.strong {
+  color: #0ac8b9 !important;
+}
+.average {
+  color: #d0d8dd !important;
+}
+.roster-list {
+  border-top: 1px solid var(--line);
+}
+.roster-row {
+  display: grid;
+  grid-template-columns: 50px 50px 1fr 48px;
+  align-items: center;
+  min-height: 60px;
+  border-bottom: 1px solid rgba(120, 90, 40, 0.34);
+}
+.roster-row:nth-child(even) {
+  background: rgba(8, 29, 43, 0.42);
+}
+/* Role glyph sits in a dark socket. The icons are already gold
+   (avg #c9ab6f), so a gold plate behind them would wash them out. */
+.roster-row .role-icon {
+  align-self: center;
+  justify-self: start;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  background: #0a1622;
+  border: 1px solid var(--gold-dark);
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+}
+.roster-row .role-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+/* Face photo next to the glyph. The file is already a 128x128 square cropped
+   around the head by make-player-faces.mjs, so cover just trims the edges and
+   the face lands near 33px instead of the ~23px a whole cutout would give.
+   Same clip-path as the glyph socket so both read as one family. */
+.roster-face {
+  align-self: center;
+  justify-self: start;
+  display: grid;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(160deg, #0e2a3c, #06131e);
+  border: 1px solid #c8aa6e;
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+}
+.roster-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.roster-row b {
+  padding: 5px 8px;
+  color: #f0e6d2;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Empty slot: same footprint as a filled one, dimmed so it reads as a socket. */
+.roster-row.empty b {
+  color: #5c5b57;
+  border-color: rgba(120, 90, 40, 0.34);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.roster-row.empty .role-icon {
+  opacity: 0.45;
+}
+/* The photo column stays reserved so filled and empty rows share one grid, but
+   an empty slot must not read as a second gold frame. */
+.roster-row.empty .roster-face {
+  background: none;
+  border-color: transparent;
+}
+.roster-row em {
+  color: #e4b852;
+  font: 700 12px var(--font-ui);
+  font-style: normal;
+  text-align: right;
+}
+.roster-panel .muted {
+  margin-top: auto;
+  color: #b0bdc5;
+}
+.best-solution-panel h2 {
+  margin-bottom: 14px;
+}
+.best-solution-panel .current-options {
+  margin-top: 16px;
+}
+/* Reserved body of the decision panel: verdict + 4 rows of cards. Stretches to
+   fill the stretched panel, so the placeholder grows with it. */
+.decision-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 448px;
+}
+.decision-body > * {
+  flex: none;
+}
+.round-advice {
+  position: relative;
+  z-index: 1;
+  margin: 17px 0 14px;
+  padding: 13px 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 200, 185, 0.14),
+    rgba(200, 155, 60, 0.08)
+  );
+  border: 1px solid #0a7480;
+  border-left: 3px solid #0ac8b9;
+}
+.round-advice-label,
+.current-options-label {
+  color: #8bd2d1;
+  font: 700 9px var(--font-ui);
+  letter-spacing: 0.14em;
+}
+.round-advice strong {
+  display: block;
+  margin: 6px 0 3px;
+  color: #f0d27b;
+  font:
+    700 20px "Philosopher",
+    Georgia,
+    serif;
+  letter-spacing: 0.06em;
+}
+.round-advice span {
+  display: block;
+  color: #c3d0d4;
+  font: 700 11px var(--font-ui);
+}
+.round-advice button {
+  margin-top: 10px;
+  padding: 7px 10px;
+  color: #f0e6d2;
+  background: #554018;
+  border: 1px solid #c89b3c;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+}
+.current-options {
+  position: relative;
+  z-index: 1;
+  margin: 13px 0;
+}
+.current-options-label {
+  margin-bottom: 6px;
+  color: #c89b3c;
+}
+.current-options > button {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 0 6px 6px 0;
+  padding: 8px 10px;
+  color: #e7dfcb;
+  background: #071c2b;
+  border: 1px solid #386579;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.current-options > button:hover {
+  border-color: #0ac8b9;
+  background: #0b4250;
+}
+.current-options small {
+  margin-top: 3px;
+  color: #a9c0c7;
+  font: 10px var(--font-ui);
+}
+
+.full-panel {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+}
+.toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 19px;
+}
+.toolbar input {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 250px;
+  min-width: 0;
+  padding: 12px 14px;
+  color: #f0e6d2;
+  background: #030c16;
+  border: 1px solid #785a28;
+  border-radius: 0;
+  outline: 0;
+}
+.toolbar input:focus {
+  border-color: #0ac8b9;
+  box-shadow: 0 0 0 1px #0ac8b9;
+}
+.role-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.role-filters button {
+  padding: 9px 12px;
+  color: #aebbc4;
+  background: #081522;
+  border: 1px solid #4d3b20;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+.role-filters button:hover,
+.role-filters button.active {
+  color: #f0e6d2;
+  border-color: #0ac8b9;
+  background: #0a3344;
+}
+.player-table {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid #785a28;
+}
+.table-head,
+.table-row {
+  display: grid;
+  grid-template-columns: 42px 1.1fr 0.8fr 1.4fr 62px;
+  align-items: center;
+  gap: 10px;
+}
+.table-head {
+  padding: 11px 14px;
+  color: #d1ae61;
+  background: #0b1a2a;
+  font:
+    700 10px Consolas,
+    monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.table-row {
+  width: 100%;
+  padding: 12px 14px;
+  color: #c2ccd2;
+  background: rgba(3, 13, 23, 0.92);
+  border: 0;
+  border-top: 1px solid rgba(120, 90, 40, 0.32);
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+}
+.table-row:nth-child(even) {
+  background: rgba(9, 28, 41, 0.88);
+}
+.table-row:hover {
+  background: rgba(0, 90, 130, 0.36);
+}
+/* Ranking rows are paginated, so this used to be :first-of-type/:nth-of-type
+   and marked rows 1,3,4 of every page. Driven by the global rank instead. */
+.table-row.top {
+  border-left: 3px solid #c89b3c;
+}
+.table-row b {
+  color: #f0e6d2;
+  font-size: 13px;
+}
+/* Player name cell: bust on the left, name beside it. The photo box is a fixed
+   size so a missing file leaves the name in the same place as every other row. */
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+/* Line the header up with the name, not with the photo slot. */
+.player-head {
+  padding-left: 41px;
+}
+.player-cell b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-photo {
+  flex: none;
+  width: 45px;
+  height: 45px;
+}
+.player-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.table-row strong {
+  font:
+    700 13px Consolas,
+    monospace;
+  text-align: right;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 14px;
+}
+.pagination button {
+  min-width: 36px;
+  padding: 8px 10px;
+  color: #aebbc4;
+  background: #081522;
+  border: 1px solid #4d3b20;
+  cursor: pointer;
+  font-size: 11px;
+}
+.pagination button:hover:not(:disabled),
+.pagination button.active {
+  color: #f0e6d2;
+  border-color: #0ac8b9;
+  background: #0a3344;
+}
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.combo-section {
+  max-width: var(--shell-max);
+  margin: 24px auto 0;
+}
+.combo-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 11px;
+}
+.combo-card {
+  display: grid;
+  grid-template-columns: 42px 1fr 65px;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 17px;
+}
+.combo-rank {
+  color: #e0b95b;
+  font:
+    600 16px "Oswald",
+    "Arial Narrow",
+    sans-serif;
+}
+.combo-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.combo-members span {
+  color: #f0e6d2;
+  font-weight: bold;
+}
+.combo-members small {
+  color: #9ec1c7;
+  font:
+    700 9px Consolas,
+    monospace;
+}
+.combo-power {
+  color: #f0c55d;
+  font:
+    700 18px Consolas,
+    monospace;
+  text-align: right;
+}
+.combo-meta {
+  grid-column: 2/-1;
+  color: #b7c4ca;
+  font:
+    700 10px Consolas,
+    monospace;
+}
+.combo-intro {
+  margin-bottom: 26px;
+}
+/* Fixed 5-column role layout: substitutes stack inside their own role column. */
+.match-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 17px;
+}
+.match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.match-col-label {
+  color: var(--gold);
+  font: 700 9px var(--font-ui);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+.match-chip {
+  /* Score sits under the name: a 5-column split is too narrow for both on one
+     line, and the name is what identifies the player. */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 5px 6px;
+  color: #d4e0e2;
+  background: #071c2b;
+  border: 1px solid #386579;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+  font: 700 11px var(--font-ui);
+}
+.match-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.match-chip em {
+  color: #e4b852;
+  font: 700 10px var(--font-ui);
+  font-style: normal;
+}
+.match-chip:hover {
+  color: #f0e6d2;
+  border-color: #0ac8b9;
+  background: #0b4250;
+}
+.app-state {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  color: #d9b65d;
+  background: #010a13;
+}
+.app-state.error {
+  color: #ff9999;
+  padding: 20px;
+  text-align: center;
+}
+@media (max-width: 1000px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .header-score {
+    text-align: left;
+  }
+  .table-head,
+  .table-row {
+    grid-template-columns: 30px 1fr 58px;
+  }
+  .table-head span:nth-child(3),
+  .table-head span:nth-child(4),
+  .table-row span:nth-child(3),
+  .table-row span:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Calculator layout: roster, screenshot upload and best decision share the first row. */
+.calculator-grid {
+  grid-template-columns: minmax(280px, 0.5fr) minmax(270px, 1fr) minmax(
+      330px,
+      0.9fr
+    );
+}
+.current-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+.current-options > button {
+  width: 100%;
+  min-width: 0;
+  min-height: 62px;
+  margin: 0;
+  padding: 8px 9px;
+}
+.current-options > button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.current-options > button small {
+  white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+  .current-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Decision cards: one stable grid, readable content and clear action states. */
+.best-solution-panel h2 {
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.round-advice {
+  min-height: 82px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.round-advice.pick {
+  border-color: #0a9b9a;
+  border-left-color: #0ac8b9;
+  background: linear-gradient(
+    110deg,
+    rgba(10, 200, 185, 0.18),
+    rgba(5, 22, 31, 0.9)
+  );
+}
+.round-advice.reroll {
+  border-color: #c89b3c;
+  border-left-color: #f0c55d;
+  background: linear-gradient(
+    110deg,
+    rgba(200, 155, 60, 0.22),
+    rgba(33, 25, 9, 0.92)
+  );
+}
+.round-advice strong {
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.round-advice.reroll strong {
+  color: #ffe09a;
+  text-shadow: 0 0 12px rgba(240, 197, 93, 0.35);
+}
+.round-advice.pick strong {
+  color: #8de5da;
+  text-shadow: 0 0 12px rgba(10, 200, 185, 0.35);
+}
+.round-advice span {
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.current-options {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+}
+.current-options-label {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+}
+.current-options > button {
+  min-height: 70px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(145deg, #102c3b, #06131e);
+  border-color: #396d7b;
+  box-shadow: inset 0 0 0 1px rgba(240, 230, 210, 0.04);
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+}
+.current-options > button:hover {
+  border-color: #0ac8b9;
+  background: linear-gradient(145deg, #124454, #09222d);
+}
+.current-options > button span {
+  color: #f0e6d2;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.current-options > button small {
+  max-width: 100%;
+  color: #9ed0d0;
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Game controls: centered row at the very bottom, under the three blocks. */
+.game-actions {
+  grid-column: 1 / -1;
+  max-width: var(--shell-max);
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.game-actions button {
+  padding: 11px 26px;
+  color: #f0e6d2;
+  background: linear-gradient(180deg, #98752d, #554018);
+  border: 1px solid #d1a446;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.14em;
+  /* Same chamfered silhouette as .header-score, so the footer matches. */
+  clip-path: polygon(
+    9px 0,
+    100% 0,
+    100% calc(100% - 9px),
+    calc(100% - 9px) 100%,
+    0 100%,
+    0 9px
+  );
+}
+.game-actions button:hover:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(180deg, #b8892f, #6b4f1f);
+  box-shadow:
+    0 0 13px rgba(200, 155, 60, 0.35),
+    inset 0 0 12px rgba(240, 230, 210, 0.12);
+}
+/* Disabled reads as a dim socket, not a washed-out gold plate: opacity over a
+   gold gradient turned РЕРОЛЛ into a muddy grey rectangle. */
+.game-actions button:disabled {
+  color: #5c7a80;
+  background: #0a1a26;
+  border-color: var(--gold-dark);
+  cursor: not-allowed;
+}
+
+/* Restart confirmation modal. */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(1, 7, 14, 0.78);
+}
+.restart-modal {
+  max-width: 430px;
+}
+.restart-modal h2 {
+  margin: 7px 0 12px;
+}
+.restart-modal p {
+  position: relative;
+  z-index: 1;
+}
+.modal-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modal-actions button {
+  padding: 10px 20px;
+  color: #f0e6d2;
+  background: #1a2c3c;
+  border: 1px solid #386579;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+}
+.modal-actions button:hover {
+  border-color: #0ac8b9;
+  background: #0b4250;
+}
+.modal-actions button.danger {
+  color: #fff;
+  background: linear-gradient(180deg, #9b2f22, #5a1a12);
+  border-color: #d1553c;
+}
+.modal-actions button.danger:hover {
+  background: linear-gradient(180deg, #b8392a, #6d2118);
+  box-shadow: 0 0 13px rgba(209, 85, 60, 0.35);
+}
+
+.team-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 147px;
+  padding: 10px 11px;
+  margin-top: 10px;
+  background: #071a28;
+  border-left: 2px solid #c89b3c;
+  font: 11px/1.45 var(--font-ui);
+}
+
+.team-block:focus-within {
+  z-index: 3;
+}
+.team-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+.team-block-head b {
+  color: #f0e6d2;
+  font-family: "Jura", "Segoe UI", sans-serif;
+}
+.team-clear {
+  padding: 3px 8px;
+  color: #9fc0c7;
+  background: transparent;
+  border: 1px solid #386579;
+  border-radius: 0;
+  cursor: pointer;
+  font: 700 9px var(--font-ui);
+  letter-spacing: 0.08em;
+}
+.team-clear:hover {
+  color: #f0e6d2;
+  border-color: #0ac8b9;
+}
+.team-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.team-logo {
+  justify-content: center;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+/* The image fills the square slot and contain centres it inside, so a 4:1
+   wordmark and a square crest occupy the same box instead of one of them
+   breaking the row. A square box without contain stretched wide marks flat. */
+.team-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.team-logo-letters {
+  align-items: center;
+  justify-content: center;
+  background: #0a1622;
+  border: 1px solid var(--gold-dark);
+  border-radius: 3px;
+  color: var(--gold);
+  font: 700 11px var(--font-ui);
+  letter-spacing: 0.04em;
+}
+.team-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.team-search {
+  width: 100%;
+  padding: 8px 9px;
+  color: #f0e6d2;
+  background: #030c16;
+  border: 1px solid #386579;
+  border-radius: 0;
+  outline: 0;
+  font-size: 12px;
+}
+.team-search:focus {
+  border-color: #0ac8b9;
+  box-shadow: 0 0 0 1px #0ac8b9;
+}
+.team-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 3px 0 0;
+  padding: 0;
+  /* Four rows only: 32px logo + 8px padding above and below = 48px each,
+     192px, plus the list's own 1px borders, which border-box folds in.
+     192px would clip the fourth row and force a scrollbar at 4 items. */
+  max-height: 194px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  background-color: #04121d;
+  border: 1px solid #386579;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  scrollbar-width: thin;
+  scrollbar-color: #386579 #04121d;
+}
+/* Opaque on the item itself too: a transparent button over any partially
+   painted ancestor turns the list into unreadable mush. */
+.team-options button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  color: #d4e0e2;
+  background-color: #04121d;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Rajdhani", "Bahnschrift", "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.team-options button:hover {
+  color: #fff;
+  background-color: #0b4250;
+}
+.team-year {
+  flex: 0 0 96px;
+  padding: 8px 9px;
+  color: #f0e6d2;
+  background: #030c16;
+  border: 1px solid #386579;
+  border-radius: 0;
+  outline: 0;
+  font-size: 12px;
+}
+.team-year:focus {
+  border-color: #0ac8b9;
+  box-shadow: 0 0 0 1px #0ac8b9;
+}
+.team-year:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.team-block-hint {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 9px 0 1px;
+  border: 1px dashed rgba(120, 90, 40, 0.22);
+  color: #6e6a5c;
+  font-size: 11px;
+  text-align: center;
+}
+/* A team with a substitute shows two chips in one role column. Cap the list at
+   two chip rows so a 6-player roster does not grow the whole page into a
+   scroll; 7+ (rare) scroll inside the block instead. */
+.team-block .match-list {
+  margin: 9px 0 2px;
+  max-height: 108px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #386579 #04121d;
+}
+/* Compact chips once a team is picked: fits 4 per row instead of 3, so a
+   full roster takes 3 lines instead of 4. */
+.team-block .match-chip {
+  padding: 5px 5px;
+  font-size: 10px;
+}
+@media (max-width: 1000px) {
+  /* Three narrow columns instead of five: names stop being truncated to 2 chars. */
+  .match-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .current-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+/* Screenshot import (ScreenshotScan) — sits in the calculator's right columns
+   beside the roster in the scan phase, so it never leaves a dead gap next to
+   the roster. Preview left, three review rows right once a shot is loaded. */
+.calculator-grid .screenshot-panel {
+  grid-column: 2 / -1;
+}
+.shot-content {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+  align-items: start;
+}
+.shot-preview-wrap {
+  border: 1px solid var(--line);
+  background: var(--panel-deep);
+  padding: 10px;
+}
+.shot-preview-wrap.dragging {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.shot-preview {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  display: block;
+  touch-action: none;
+}
+.shot-frame-hint {
+  margin-top: 7px;
+  color: #93fdee;
+  font-size: 11px;
+  background: rgba(0, 90, 130, 0.32);
+  padding: 4px 8px;
+  border-left: 2px solid var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.shot-reset-roi {
+  background: none;
+  border: 1px solid var(--line);
+  color: inherit;
+  font: inherit;
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.shot-reset-roi:hover {
+  border-color: var(--blue);
+}
+
+.shot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-height: 220px;
+  padding: 32px 20px;
+  margin-top: 14px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  border: 1px dashed rgba(200, 155, 60, 0.4);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(10, 200, 185, 0.05) 0%,
+    rgba(4, 15, 26, 0.7) 100%
+  );
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.shot-empty:hover,
+.shot-empty.dragging {
+  border-color: var(--blue);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(10, 200, 185, 0.12) 0%,
+    rgba(4, 15, 26, 0.85) 100%
+  );
+  box-shadow:
+    inset 0 0 25px rgba(10, 200, 185, 0.2),
+    0 0 16px rgba(10, 200, 185, 0.2);
+}
+/* Gold corner brackets, Hextech style. */
+.shot-empty::before,
+.shot-empty::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+  transition: border-color 0.25s ease;
+}
+.shot-empty::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.shot-empty::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+.shot-empty:hover::before,
+.shot-empty:hover::after,
+.shot-empty.dragging::before,
+.shot-empty.dragging::after {
+  border-color: var(--blue);
+}
+.shot-drop-icon {
+  width: 42px;
+  height: 42px;
+  color: var(--gold);
+  filter: drop-shadow(0 0 8px rgba(200, 155, 60, 0.4));
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+.shot-empty:hover .shot-drop-icon,
+.shot-empty.dragging .shot-drop-icon {
+  transform: translateY(-3px);
+  color: var(--blue);
+  filter: drop-shadow(0 0 10px rgba(10, 200, 185, 0.6));
+}
+.shot-drop-title {
+  font: 700 15px var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+.shot-drop-desc {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 420px;
+}
+.shot-kbd {
+  display: inline-block;
+  font: 700 11px var(--font-ui);
+  color: var(--blue);
+  background: var(--panel);
+  border: 1px solid rgba(10, 200, 185, 0.4);
+  padding: 1px 6px;
+  margin: 0 3px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
+}
+/* The empty box had no rule for its own button class, so the UA default (white)
+   leaked through. Skin both file-picker and apply buttons the same way. */
+.shot-browse,
+.shot-apply {
+  background: linear-gradient(180deg, #1e2832 0%, #0d1622 100%);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font: 700 12px var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  cursor: pointer;
+  box-shadow: inset 0 0 6px rgba(200, 155, 60, 0.2);
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.shot-browse {
+  margin-top: 8px;
+}
+.shot-browse:hover,
+.shot-apply:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow:
+    0 0 12px rgba(10, 200, 185, 0.3),
+    inset 0 0 8px rgba(10, 200, 185, 0.3);
+}
+.shot-apply:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.shot-busy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 26px 10px;
+  text-align: center;
+}
+.shot-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--gold-dark);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: shot-turn 0.9s linear infinite;
+}
+@keyframes shot-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.shot-results {
+  display: grid;
+  gap: 10px;
+}
+.shot-card {
+  background: var(--panel-deep);
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+}
+.shot-card.duplicate {
+  border-color: #ff4d4f;
+}
+.shot-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: #8fa3ad;
+}
+.shot-score {
+  font-weight: 700;
+}
+.shot-score.score-good {
+  color: var(--blue);
+}
+.shot-score.score-weak {
+  color: #c8a24f;
+}
+.shot-card-picks {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 8px;
+}
+.shot-card-picks select {
+  width: 100%;
+  min-width: 0;
+  background: #010a13;
+  color: #dfe5ea;
+  border: 1px solid #386579;
+  border-radius: 0;
+  outline: 0;
+  font-size: 12px;
+  padding: 7px 6px;
+}
+.shot-card-picks select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.shot-card-picks select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.shot-warn {
+  display: block;
+  margin-top: 7px;
+  color: #ff7676;
+  font-size: 11px;
+}
+
+.shot-apply {
+  align-self: stretch;
+  margin-top: 12px;
+}
+.shot-rescan {
+  border: 1px dashed rgba(120, 90, 40, 0.22);
+  padding: 22px 12px;
+  text-align: center;
+}
+@media (max-width: 1000px) {
+  .calculator-grid .screenshot-panel {
+    grid-column: auto;
+  }
+  .shot-content {
+    grid-template-columns: 1fr;
+  }
+}
+/* FINAL RESULT: hero with tier badge, stat boxes, synergy tags, award rows. */
+.final-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.summary-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  background: radial-gradient(
+    circle at 100% 50%,
+    rgba(200, 155, 60, 0.15) 0%,
+    rgba(9, 20, 40, 0.8) 100%
+  );
+  border: 1px solid #785a28;
+  border-bottom: 2px solid #c89b3c;
+}
+.summary-title {
+  margin: 2px 0 6px;
+}
+.summary-mvp {
+  color: #b6c1c9;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.summary-mvp b {
+  color: #f0c55d;
+}
+.summary-reliability {
+  margin-top: 4px;
+  color: #0ac8b9;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.summary-tier {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.summary-tier-score {
+  text-align: right;
+}
+.summary-tier-score span {
+  display: block;
+  color: #c89b3c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.summary-tier-score b {
+  font-size: 22px;
+}
+.tier-letter {
+  font-family: "Philosopher", "Beaufort for LOL", serif;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(
+    180deg,
+    #fff 0%,
+    #f0e6d2 30%,
+    #c89b3c 80%,
+    #785a28 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(200, 155, 60, 0.6));
+}
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.summary-stat-box {
+  position: relative;
+  padding: 10px 14px;
+  text-align: center;
+  background: rgba(4, 15, 26, 0.7);
+  border: 1px solid rgba(120, 90, 40, 0.3);
+}
+.summary-stat-box::after {
+  content: "";
+  position: absolute;
+  right: 20%;
+  bottom: 0;
+  left: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c89b3c, transparent);
+}
+.summary-stat-val {
+  color: #f0e6d2;
+  font: 700 24px "Oswald", "Arial Narrow", sans-serif;
+  letter-spacing: 0.05em;
+}
+.summary-stat-val.gold {
+  color: #c89b3c;
+}
+.summary-stat-lbl {
+  margin-top: 2px;
+  color: #c89b3c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  color: #b6c1c9;
+  background: rgba(9, 20, 40, 0.7);
+  border: 1px solid #785a28;
+  font: 700 11px "Jura", "Segoe UI", sans-serif;
+  letter-spacing: 0.04em;
+}
+.tag-badge.synergy {
+  color: #0ac8b9;
+}
+/* Loading-screen roster: 5 vertical champion cards. */
+.lol-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(1, 10, 19, 0.7);
+  border: 1px solid rgba(120, 90, 40, 0.4);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  min-height: 0;
+}
+.lol-player-card {
+  position: relative;
+  height: auto;
+  aspect-ratio: 1 / 1.55;
+  max-height: clamp(280px, 28vw, 340px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: #040c17;
+  border: 1px solid #785a28;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.lol-player-card:hover {
+  transform: translateY(-4px);
+  border-color: #c89b3c;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(200, 155, 60, 0.2);
+}
+.lol-player-card.mvp {
+  border-color: #c89b3c;
+}
+.lol-player-avatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 50%;
+  z-index: 1;
+  filter: contrast(1.05) brightness(0.95);
+}
+.lol-team-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  transform: translate(-50%, -50%);
+  opacity: 0.35;
+  z-index: 1;
+}
+.lol-card-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(1, 10, 19, 0) 35%,
+    rgba(1, 10, 19, 0.75) 65%,
+    rgba(1, 10, 19, 0.98) 90%,
+    #010a13 100%
+  );
+}
+.lol-role-socket {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #1b2c44 0%, #060f1c 100%);
+  border: 2px solid #c89b3c;
+  box-shadow: 0 0 8px rgba(200, 155, 60, 0.5), inset 0 0 4px rgba(200, 155, 60, 0.4);
+}
+.lol-role-socket img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(1.6) drop-shadow(0 0 3px rgba(200, 155, 60, 0.6));
+}
+.lol-score-socket {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  z-index: 3;
+  padding: 1px 7px;
+  color: #f0e6d2;
+  font: 700 13px "Oswald", "Arial Narrow", sans-serif;
+  background: rgba(4, 15, 26, 0.85);
+  border: 1px solid #c89b3c;
+  box-shadow: 0 0 8px rgba(200, 155, 60, 0.45);
+}
+.lol-player-footer {
+  position: relative;
+  z-index: 3;
+  padding: 10px 8px;
+  text-align: center;
+  border-top: 1px solid rgba(120, 90, 40, 0.3);
+}
+.lol-player-card.mvp .lol-player-footer {
+  box-shadow: inset 0 3px 0 #c89b3c;
+}
+.lol-player-name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lol-player-meta {
+  margin: 2px 0 4px;
+  color: #c89b3c;
+  font: 600 11px "Jura", "Segoe UI", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.lol-player-stats-mini {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  color: #0ac8b9;
+  font: 700 11px "Jura", "Segoe UI", sans-serif;
+}
+.style-arrow {
+  font-style: normal;
+  font-size: 13px;
+}
+.style-arrow.up {
+  color: #0ac8b9;
+}
+.style-arrow.down {
+  color: #d98c8c;
+}
+@media (max-width: 1000px) {
+  .lol-roster-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .summary-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lol-roster-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

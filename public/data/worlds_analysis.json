@@ -1,0 +1,1713 @@
+{
+  "topByRole": {
+    "TOP": [
+      {
+        "name": "Zeus",
+        "role": "TOP",
+        "year": 2023,
+        "team": "T1",
+        "score": 99.9
+      },
+      {
+        "name": "Nuguri",
+        "role": "TOP",
+        "year": 2020,
+        "team": "Dplus Kia",
+        "score": 96.2
+      },
+      {
+        "name": "Looper",
+        "role": "TOP",
+        "year": 2014,
+        "team": "Samsung White",
+        "score": 95.6
+      },
+      {
+        "name": "Zeus",
+        "role": "TOP",
+        "year": 2024,
+        "team": "T1",
+        "score": 93.31
+      },
+      {
+        "name": "TheShy",
+        "role": "TOP",
+        "year": 2018,
+        "team": "Invictus Gaming",
+        "score": 92.5
+      },
+      {
+        "name": "CuVee",
+        "role": "TOP",
+        "year": 2017,
+        "team": "Samsung Galaxy",
+        "score": 92.4
+      },
+      {
+        "name": "MaRin",
+        "role": "TOP",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 92.3
+      },
+      {
+        "name": "Flandre",
+        "role": "TOP",
+        "year": 2021,
+        "team": "EDward Gaming",
+        "score": 92.2
+      },
+      {
+        "name": "Zeus",
+        "role": "TOP",
+        "year": 2022,
+        "team": "T1",
+        "score": 91.98
+      },
+      {
+        "name": "GimGoon",
+        "role": "TOP",
+        "year": 2019,
+        "team": "FunPlus Phoenix",
+        "score": 91.9
+      },
+      {
+        "name": "Kingen",
+        "role": "TOP",
+        "year": 2022,
+        "team": "Kiwoom DRX",
+        "score": 91.8
+      },
+      {
+        "name": "Khan",
+        "role": "TOP",
+        "year": 2021,
+        "team": "Dplus Kia",
+        "score": 91.3
+      }
+    ],
+    "JUNGLE": [
+      {
+        "name": "Oner",
+        "role": "JUNGLE",
+        "year": 2023,
+        "team": "T1",
+        "score": 99.9
+      },
+      {
+        "name": "DanDy",
+        "role": "JUNGLE",
+        "year": 2014,
+        "team": "Samsung White",
+        "score": 96.2
+      },
+      {
+        "name": "Tian",
+        "role": "JUNGLE",
+        "year": 2019,
+        "team": "FunPlus Phoenix",
+        "score": 96.2
+      },
+      {
+        "name": "Ambition",
+        "role": "JUNGLE",
+        "year": 2017,
+        "team": "Samsung Galaxy",
+        "score": 95
+      },
+      {
+        "name": "Canyon",
+        "role": "JUNGLE",
+        "year": 2020,
+        "team": "Dplus Kia",
+        "score": 93.1
+      },
+      {
+        "name": "Ning",
+        "role": "JUNGLE",
+        "year": 2018,
+        "team": "Invictus Gaming",
+        "score": 92.2
+      },
+      {
+        "name": "Oner",
+        "role": "JUNGLE",
+        "year": 2024,
+        "team": "T1",
+        "score": 91.64
+      },
+      {
+        "name": "Jiejie",
+        "role": "JUNGLE",
+        "year": 2021,
+        "team": "EDward Gaming",
+        "score": 91.5
+      },
+      {
+        "name": "Bengi",
+        "role": "JUNGLE",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 91.37
+      },
+      {
+        "name": "Cuzz",
+        "role": "JUNGLE",
+        "year": 2025,
+        "team": "KT Rolster",
+        "score": 91.2
+      },
+      {
+        "name": "Bengi",
+        "role": "JUNGLE",
+        "year": 2016,
+        "team": "SK Telecom T1",
+        "score": 90.81
+      },
+      {
+        "name": "Broxah",
+        "role": "JUNGLE",
+        "year": 2018,
+        "team": "Fnatic",
+        "score": 90.1
+      }
+    ],
+    "MID": [
+      {
+        "name": "Rookie",
+        "role": "MID",
+        "year": 2018,
+        "team": "Invictus Gaming",
+        "score": 99.4
+      },
+      {
+        "name": "PawN",
+        "role": "MID",
+        "year": 2014,
+        "team": "Samsung White",
+        "score": 96.2
+      },
+      {
+        "name": "Doinb",
+        "role": "MID",
+        "year": 2019,
+        "team": "FunPlus Phoenix",
+        "score": 95.4
+      },
+      {
+        "name": "Bdd",
+        "role": "MID",
+        "year": 2025,
+        "team": "KT Rolster",
+        "score": 92.6
+      },
+      {
+        "name": "ShowMaker",
+        "role": "MID",
+        "year": 2021,
+        "team": "Dplus Kia",
+        "score": 91.5
+      },
+      {
+        "name": "Faker",
+        "role": "MID",
+        "year": 2016,
+        "team": "SK Telecom T1",
+        "score": 91.4
+      },
+      {
+        "name": "Faker",
+        "role": "MID",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 91.2
+      },
+      {
+        "name": "ShowMaker",
+        "role": "MID",
+        "year": 2020,
+        "team": "Dplus Kia",
+        "score": 91.2
+      },
+      {
+        "name": "Chovy",
+        "role": "MID",
+        "year": 2024,
+        "team": "Gen.G",
+        "score": 90.7
+      },
+      {
+        "name": "Easyhoon",
+        "role": "MID",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 90.3
+      },
+      {
+        "name": "Faker",
+        "role": "MID",
+        "year": 2023,
+        "team": "T1",
+        "score": 90.3
+      },
+      {
+        "name": "Knight",
+        "role": "MID",
+        "year": 2024,
+        "team": "Bilibili Gaming",
+        "score": 90.3
+      }
+    ],
+    "ADC": [
+      {
+        "name": "Bang",
+        "role": "ADC",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 96.8
+      },
+      {
+        "name": "Bang",
+        "role": "ADC",
+        "year": 2016,
+        "team": "SK Telecom T1",
+        "score": 94.1
+      },
+      {
+        "name": "Ghost",
+        "role": "ADC",
+        "year": 2020,
+        "team": "Dplus Kia",
+        "score": 93.9
+      },
+      {
+        "name": "Gumayusi",
+        "role": "ADC",
+        "year": 2022,
+        "team": "T1",
+        "score": 93.4
+      },
+      {
+        "name": "Piglet",
+        "role": "ADC",
+        "year": 2013,
+        "team": "SK Telecom T1",
+        "score": 93
+      },
+      {
+        "name": "Rekkles",
+        "role": "ADC",
+        "year": 2018,
+        "team": "Fnatic",
+        "score": 92.7
+      },
+      {
+        "name": "Gumayusi",
+        "role": "ADC",
+        "year": 2024,
+        "team": "T1",
+        "score": 92.3
+      },
+      {
+        "name": "Viper",
+        "role": "ADC",
+        "year": 2025,
+        "team": "Hanwha Life Esports",
+        "score": 92.3
+      },
+      {
+        "name": "Uzi",
+        "role": "ADC",
+        "year": 2017,
+        "team": "Royal Never Give Up",
+        "score": 92.2
+      },
+      {
+        "name": "Lwx",
+        "role": "ADC",
+        "year": 2019,
+        "team": "FunPlus Phoenix",
+        "score": 91.8
+      },
+      {
+        "name": "Gumayusi",
+        "role": "ADC",
+        "year": 2023,
+        "team": "T1",
+        "score": 91.6
+      },
+      {
+        "name": "Ruler",
+        "role": "ADC",
+        "year": 2017,
+        "team": "Samsung Galaxy",
+        "score": 91.4
+      }
+    ],
+    "SUPPORT": [
+      {
+        "name": "Keria",
+        "role": "SUPPORT",
+        "year": 2023,
+        "team": "T1",
+        "score": 96.8
+      },
+      {
+        "name": "Keria",
+        "role": "SUPPORT",
+        "year": 2022,
+        "team": "T1",
+        "score": 95.1
+      },
+      {
+        "name": "Keria",
+        "role": "SUPPORT",
+        "year": 2024,
+        "team": "T1",
+        "score": 93.49
+      },
+      {
+        "name": "Crisp",
+        "role": "SUPPORT",
+        "year": 2019,
+        "team": "FunPlus Phoenix",
+        "score": 92.5
+      },
+      {
+        "name": "Mata",
+        "role": "SUPPORT",
+        "year": 2014,
+        "team": "Samsung White",
+        "score": 92.4
+      },
+      {
+        "name": "Keria",
+        "role": "SUPPORT",
+        "year": 2021,
+        "team": "T1",
+        "score": 92.3
+      },
+      {
+        "name": "Keria",
+        "role": "SUPPORT",
+        "year": 2025,
+        "team": "T1",
+        "score": 92.02
+      },
+      {
+        "name": "Kael",
+        "role": "SUPPORT",
+        "year": 2025,
+        "team": "Anyone's Legend",
+        "score": 91.7
+      },
+      {
+        "name": "Baolan",
+        "role": "SUPPORT",
+        "year": 2018,
+        "team": "Invictus Gaming",
+        "score": 91.6
+      },
+      {
+        "name": "GorillA",
+        "role": "SUPPORT",
+        "year": 2016,
+        "team": "ROX Tigers",
+        "score": 91.4
+      },
+      {
+        "name": "CoreJJ",
+        "role": "SUPPORT",
+        "year": 2017,
+        "team": "Samsung Galaxy",
+        "score": 91.3
+      },
+      {
+        "name": "Wolf",
+        "role": "SUPPORT",
+        "year": 2015,
+        "team": "SK Telecom T1",
+        "score": 90.7
+      }
+    ]
+  },
+  "pairs": [
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.90000000000002,
+      "base": 99.90000000000002,
+      "carry": 0,
+      "weak": 0
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.90000000000002,
+      "base": 99.90000000000002,
+      "carry": 0,
+      "weak": 0
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 99.62727272727274,
+      "base": 99.62727272727274,
+      "carry": 0.05,
+      "weak": 0.05
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.62727272727274,
+      "base": 99.62727272727274,
+      "carry": 0.05,
+      "weak": 0.05
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 99.60731707317072,
+      "base": 99.60731707317072,
+      "carry": 0.05,
+      "weak": 0.05
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.60731707317072,
+      "base": 99.60731707317072,
+      "carry": 0.05,
+      "weak": 0.05
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.52222222222224,
+      "base": 98.52222222222224,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.52222222222224,
+      "base": 98.52222222222224,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.3969696969697,
+      "base": 98.3969696969697,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.3969696969697,
+      "base": 98.3969696969697,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.36,
+      "base": 98.36,
+      "carry": 0.2600000000000023,
+      "weak": 0.25999999999999945
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.36,
+      "base": 98.36,
+      "carry": 0.2600000000000023,
+      "weak": 0.25999999999999945
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.24186046511626,
+      "base": 98.24186046511626,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.24186046511626,
+      "base": 98.24186046511626,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Nuguri",
+          "role": "TOP",
+          "year": 2020,
+          "team": "Dplus Kia",
+          "score": 96.2
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.2,
+      "base": 98.2,
+      "carry": 0.3699999999999989,
+      "weak": 0.3700000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Nuguri",
+          "role": "TOP",
+          "year": 2020,
+          "team": "Dplus Kia",
+          "score": 96.2
+        }
+      ],
+      "power": 98.2,
+      "base": 98.2,
+      "carry": 0.3699999999999989,
+      "weak": 0.3700000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.1276595744681,
+      "base": 98.1276595744681,
+      "carry": 0.2600000000000023,
+      "weak": 0.25999999999999945
+    },
+    {
+      "players": [
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.1276595744681,
+      "base": 98.1276595744681,
+      "carry": 0.2600000000000023,
+      "weak": 0.25999999999999945
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.11749999999999,
+      "base": 98.11749999999999,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.11749999999999,
+      "base": 98.11749999999999,
+      "carry": 0.3100000000000023,
+      "weak": 0.30999999999999944
+    },
+    {
+      "players": [
+        {
+          "name": "Nuguri",
+          "role": "TOP",
+          "year": 2020,
+          "team": "Dplus Kia",
+          "score": 96.2
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.07317073170732,
+      "base": 98.07317073170734,
+      "carry": 0.3199999999999989,
+      "weak": 0.3200000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Nuguri",
+          "role": "TOP",
+          "year": 2020,
+          "team": "Dplus Kia",
+          "score": 96.2
+        }
+      ],
+      "power": 98.07317073170732,
+      "base": 98.07317073170734,
+      "carry": 0.3199999999999989,
+      "weak": 0.3200000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "DanDy",
+          "role": "JUNGLE",
+          "year": 2014,
+          "team": "Samsung White",
+          "score": 96.2
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 97.94545454545454,
+      "base": 97.94545454545455,
+      "carry": 0.3199999999999989,
+      "weak": 0.3200000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "Tian",
+          "role": "JUNGLE",
+          "year": 2019,
+          "team": "FunPlus Phoenix",
+          "score": 96.2
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 97.94545454545454,
+      "base": 97.94545454545455,
+      "carry": 0.3199999999999989,
+      "weak": 0.3200000000000017
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "DanDy",
+          "role": "JUNGLE",
+          "year": 2014,
+          "team": "Samsung White",
+          "score": 96.2
+        }
+      ],
+      "power": 97.94545454545454,
+      "base": 97.94545454545455,
+      "carry": 0.3199999999999989,
+      "weak": 0.3200000000000017
+    }
+  ],
+  "trios": [
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 99.68994535519127,
+      "base": 99.7032786885246,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 99.68994535519127,
+      "base": 99.7032786885246,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.68994535519126,
+      "base": 99.70327868852459,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.68994535519126,
+      "base": 99.70327868852459,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.68994535519124,
+      "base": 99.70327868852458,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 99.68994535519124,
+      "base": 99.70327868852458,
+      "carry": 0.053333333333330304,
+      "weak": 0.06666666666666857
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.88148427672957,
+      "base": 98.96415094339623,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.81733333333335,
+      "base": 98.87333333333335,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.81733333333335,
+      "base": 98.87333333333335,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.81733333333335,
+      "base": 98.87333333333335,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.81733333333335,
+      "base": 98.87333333333335,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.81733333333332,
+      "base": 98.87333333333332,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.81733333333332,
+      "base": 98.87333333333332,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.76329824561404,
+      "base": 98.81929824561404,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        }
+      ],
+      "power": 98.76329824561404,
+      "base": 98.81929824561404,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.76329824561402,
+      "base": 98.81929824561402,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.76329824561402,
+      "base": 98.81929824561402,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.76329824561402,
+      "base": 98.81929824561402,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Keria",
+          "role": "SUPPORT",
+          "year": 2023,
+          "team": "T1",
+          "score": 96.8
+        },
+        {
+          "name": "Rookie",
+          "role": "MID",
+          "year": 2018,
+          "team": "Invictus Gaming",
+          "score": 99.4
+        },
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        }
+      ],
+      "power": 98.76329824561402,
+      "base": 98.81929824561402,
+      "carry": 0.3240000000000009,
+      "weak": 0.38000000000000117
+    },
+    {
+      "players": [
+        {
+          "name": "Zeus",
+          "role": "TOP",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Oner",
+          "role": "JUNGLE",
+          "year": 2023,
+          "team": "T1",
+          "score": 99.9
+        },
+        {
+          "name": "Bang",
+          "role": "ADC",
+          "year": 2015,
+          "team": "SK Telecom T1",
+          "score": 96.8
+        }
+      ],
+      "power": 98.629,
+      "base": 98.71166666666667,
+      "carry": 0.33066666666666605,
+      "weak": 0.41333333333333544
+    }
+  ]
+}

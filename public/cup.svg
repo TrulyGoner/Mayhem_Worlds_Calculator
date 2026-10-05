@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF2D6"/>
+      <stop offset="40%" stop-color="#C89B3C"/>
+      <stop offset="100%" stop-color="#785A28"/>
+    </linearGradient>
+  </defs>
+  <!-- Чаша кубка -->
+  <path d="M7 5h18v7c0 4.5-3.5 8-8 8s-8-3.5-8-8V5z" fill="url(#gold)"/>
+  <!-- Ручки кубка -->
+  <path d="M7 7H4c-1.1 0-2 .9-2 2v2c0 3 2.5 5 5 5v-2c-1.5 0-3-1-3-3V9h3V7zm18 0h3c1.1 0 2 .9 2 2v2c0 3-2.5 5-5 5v-2c1.5 0 3-1 3-3V9h-3V7z" fill="url(#gold)"/>
+  <!-- Ножка и основание -->
+  <path d="M14 20h4v5h-4z" fill="url(#gold)"/>
+  <path d="M10 25h12v3H10z" fill="url(#gold)"/>
+</svg>
