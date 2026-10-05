@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { ScreenshotScan } from "./components/ScreenshotScan";
 import { TeamPicker } from "./components/TeamPicker";
 import { FinalSummary } from "./components/FinalSummary";
-import { loadAnalysis } from "./data/analysis";
 import { loadPlayers } from "./data/ratings";
 import {
   calculateTeamScore,
@@ -12,8 +11,13 @@ import {
   withTies,
 } from "./lib/scoring";
 import { playerPhoto } from "./lib/logos";
+import { buildCombos, type Combo } from "./lib/combos";
+import {
+  loadBoard,
+  recordResult,
+  type LeaderRow,
+} from "./lib/leaderboard";
 import { ROLE_ICON } from "./lib/roles";
-import type { AnalysisData, Combo } from "./types/analysis";
 import type { Player, Role } from "./types/game";
 
 type Tab = "calculator" | "players" | "combos";
@@ -66,30 +70,71 @@ function signedGain(gain: number): string {
   return `${gain >= 0 ? "+" : "−"}${Math.abs(gain).toFixed(1)}`;
 }
 
-function uniquePlayers(players: Player[]): Player[] {
-  return [...new Map(players.map((player) => [player.id, player])).values()];
-}
+// With only two players the carry and weak terms measure the same half-gap with
+// the same 0.2 factor, so they cancel exactly and the score is the role-weighted
+// average on its own. Printing "связка +0.00 / слабое −0.00" across every pair
+// card would advertise a synergy term that is not doing any work there.
+function ComboList({
+  combos,
+  title,
+  note,
+}: {
+  combos: Combo[];
+  title: string;
+  note: string;
+}) {
+  const hasSpread = combos.some((combo) => combo.carry > 0 || combo.weak > 0);
 
-function ComboList({ combos, title }: { combos: Combo[]; title: string }) {
   return (
     <section className="combo-section">
       <div className="section-label">{title}</div>
+      <p className="muted combo-note">{note}</p>
       <div className="combo-list">
         {withTies(combos, 12, (combo) => combo.power).map((combo, index) => (
-          <article className="combo-card" key={`${title}-${index}`}>
-            <div className="combo-rank">#{index + 1}</div>
-            <div className="combo-members">
-              {combo.players.map((player) => (
-                <span key={player.id}>
-                  {player.name} <small>{player.role}</small>
+          <article
+            className={`synergy-row ${index < 3 ? "gold-tier" : ""}`}
+            key={combo.players.map((player) => player.id).join("-")}
+          >
+            <div className="synergy-rank">#{index + 1}</div>
+
+            <div>
+              <div className="synergy-members">
+                {combo.players.map((player, position) => (
+                  <Fragment key={player.id}>
+                    <span className="synergy-member-chip">
+                      <span className="synergy-role-badge">{player.role}</span>
+                      <span className="synergy-member-name">{player.name}</span>
+                    </span>
+                    {position < combo.players.length - 1 && (
+                      <span className="synergy-link-symbol" aria-hidden="true">
+                        ⚔
+                      </span>
+                    )}
+                  </Fragment>
+                ))}
+              </div>
+
+              <div className="synergy-formula-breakdown">
+                <span>
+                  База: <b>{combo.base.toFixed(1)}</b>
                 </span>
-              ))}
+                {hasSpread && (
+                  <>
+                    <span aria-hidden="true">•</span>
+                    <span className="val-bonus">
+                      Связка: +{combo.carry.toFixed(2)}
+                    </span>
+                    <span aria-hidden="true">•</span>
+                    <span className="val-malus">
+                      Слабое звено −{combo.weak.toFixed(2)}
+                      {combo.weakRole ? ` (${combo.weakRole})` : ""}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
-            <div className="combo-power">{combo.power.toFixed(1)}</div>
-            <div className="combo-meta">
-              base {combo.base.toFixed(1)} · carry +{combo.carry.toFixed(1)} ·
-              weak −{combo.weak.toFixed(1)}
-            </div>
+
+            <div className="synergy-score-val">{combo.power.toFixed(1)}</div>
           </article>
         ))}
       </div>
@@ -144,7 +189,6 @@ function RosterAvatar({ role, player }: { role: Role; player?: Player }) {
 function App() {
   const [tab, setTab] = useState<Tab>("calculator");
   const [players, setPlayers] = useState<Player[]>([]);
-  const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [picked, setPicked] = useState<Player[]>([]);
   const [roundCandidates, setRoundCandidates] = useState<Player[]>([]);
   const [rerollsLeft, setRerollsLeft] = useState(3);
@@ -154,16 +198,15 @@ function App() {
   const [ratingPage, setRatingPage] = useState(1);
   const [prefill, setPrefill] = useState<{ team: string; year: number | null }[] | null>(null);
   const [roundOpen, setRoundOpen] = useState(false);
+  const [closed, setClosed] = useState(false);
+  const [board, setBoard] = useState<LeaderRow[]>(loadBoard);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [confirmingRestart, setConfirmingRestart] = useState(false);
 
   useEffect(() => {
-    Promise.all([loadPlayers(), loadAnalysis()])
-      .then(([loadedPlayers, loadedAnalysis]) => {
-        setPlayers(uniquePlayers(loadedPlayers));
-        setAnalysis(loadedAnalysis);
-      })
+    loadPlayers()
+      .then(setPlayers)
       .catch((reason: unknown) =>
         setError(
           reason instanceof Error ? reason.message : "Ошибка загрузки данных",
@@ -198,16 +241,31 @@ function App() {
   );
   const currentTeamScore = useMemo(() => calculateTeamScore(picked), [picked]);
   const currentBreakdown = useMemo(() => scoreBreakdown(picked), [picked]);
+  // `closed` is the player's own "finish here", which is how a short roster
+  // reaches the summary at all.
+  const rosterFull = picked.length >= 5;
+  const runOver = closed || rosterFull;
+
+  // One entry per finished game, not per render: runOver stays true while the
+  // summary is open and while any pick is edited, and gameId is what separates
+  // one run from the next after a restart.
+  const recordedGameId = useRef(-1);
+  useEffect(() => {
+    if (!runOver || picked.length === 0) return;
+    if (recordedGameId.current === gameId) return;
+    recordedGameId.current = gameId;
+    setBoard(recordResult(calculateTeamScore(picked), picked.length));
+  }, [runOver, picked, gameId]);
   // Screenshot -> round -> screenshot loop. roundOpen is flipped by the
   // screenshot's "apply" and by the pick/reroll that ends a round. It cannot be
   // derived from roundCandidates: those come from TeamPicker, which only mounts
   // in the round phase, so deriving the phase from them deadlocks the first
   // round.
-  const roundPhase = roundOpen && picked.length < 5;
+  const roundPhase = !runOver && roundOpen;
   // A full roster ends the loop: neither the screenshot step nor the round
-  // panel is shown once all five roles are taken.
-  const scanPhase = !roundPhase && picked.length < 5;
-  const finalPhase = picked.length >= 5;
+  // panel is shown once the game is over.
+  const scanPhase = !roundPhase && !runOver;
+  const finalPhase = runOver;
   const currentOptions = useMemo(
     () =>
       roundCandidates
@@ -250,6 +308,10 @@ function App() {
     return total / REROLL_SAMPLES;
   }, [players, picked, pickedIds, missingRoles, currentTeamScore]);
   const bestCurrentOption = currentOptions[0];
+  // ~1500 ranked rows, so it is built once per ratings load rather than per
+  // render. Reads the same player list the calculator draws from, which is what
+  // makes a combo's power comparable with a roster's score.
+  const combos = useMemo(() => buildCombos(players), [players]);
   // With every role filled a redraw cannot help either, so the reroll is only
   // worth offering while a real candidate exists to beat.
   const rerollIsBetter =
@@ -329,6 +391,7 @@ function App() {
     setTab("calculator");
     setPrefill(null);
     setRoundOpen(false);
+    setClosed(false);
   }
 
   function gameActions() {
@@ -341,6 +404,11 @@ function App() {
         >
           РЕРОЛЛ
         </button>
+        {picked.length > 0 && !runOver && (
+          <button type="button" onClick={() => setClosed(true)}>
+            ЗАВЕРШИТЬ
+          </button>
+        )}
         <button type="button" onClick={() => setConfirmingRestart(true)}>
           РЕСТАРТ
         </button>
@@ -382,7 +450,7 @@ function App() {
           className={tab === "combos" ? "active" : ""}
           onClick={() => setTab("combos")}
         >
-          Оптимальные связки
+          Оптимальные комбинации
         </button>
       </nav>
 
@@ -501,7 +569,7 @@ function App() {
               }}
             />
           ) : (
-            <FinalSummary picked={picked} allPlayers={players} />
+            <FinalSummary picked={picked} allPlayers={players} board={board} />
           )}
           {gameActions()}
         </section>
@@ -602,18 +670,28 @@ function App() {
         </section>
       )}
 
-      {tab === "combos" && analysis && (
+      {tab === "combos" && (
         <section className="full-panel">
           <div className="panel combo-intro">
-            <div className="section-label">SYNERGY MAP</div>
-            <h2>Оптимальные связки</h2>
+            <div className="section-label">COMBINATIONS</div>
+            <h2>Оптимальные комбинации</h2>
             <p className="muted">
-              Связки рассчитаны из базы Worlds Mayhem. Это не полный игровой
-              состав, а лучшие комбинации из двух и трёх игроков.
+              Лучшие пары и тройки считаются из живого рейтинга той же формулой,
+              что и итоговый score, поэтому цифры здесь сопоставимы с оценкой
+              состава. Каждая строка — один уникальный набор игроков: перестановки
+              одного состава повторяться не могут, роли у всех разные.
             </p>
           </div>
-          <ComboList title="ЛУЧШИЕ ПАРЫ" combos={analysis.pairs} />
-          <ComboList title="ЛУЧШИЕ ТРОЙКИ" combos={analysis.trios} />
+          <ComboList
+            title="ЛУЧШИЕ ПАРЫ"
+            combos={combos.pairs}
+            note="У двоих игроков бонус за разброс и штраф за слабое звено измеряют одну и ту же половину разрыва одним коэффициентом, поэтому взаимно сокращаются. Score пары — это ролевое среднее."
+          />
+          <ComboList
+            title="ЛУЧШИЕ ТРОЙКИ"
+            combos={combos.trios}
+            note="У тройки появляется третий член бонуса, у которого нет пары в штрафе, поэтому score может отличаться от ролевого среднего."
+          />
         </section>
       )}
 

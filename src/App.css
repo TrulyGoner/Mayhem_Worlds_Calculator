@@ -12,6 +12,16 @@
   --shell-max: 1560px;
   /* Jura is already the UI face from index.css; reuse it instead of monospace. */
   --font-ui: "Jura", "Segoe UI", system-ui, sans-serif;
+  /* Text ladder. Every colour below clears WCAG AA (4.5:1) against the two panel
+     backgrounds the UI actually uses, --panel-deep #050d18 and the combo row
+     #040f1a, so small labels stay legible instead of going to a grey smudge. */
+  --text-gold-highlight: #f0e6d2;
+  --text-gold-primary: #c89b3c;
+  --text-body: #b2bfca;
+  --text-muted: #8c99a6;
+  --text-accent-cyan: #0ac8b9;
+  --text-accent-red: #e06c75;
+  --text-display: "Rajdhani", "Bahnschrift", sans-serif;
 }
 
 .app-shell {
@@ -58,11 +68,14 @@
 }
 .eyebrow,
 .section-label {
-  color: #c89b3c;
-  font-size: 10px;
+  color: var(--text-gold-primary);
+  font-family: var(--text-display);
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .app-header h1 {
   margin: 2px 0;
@@ -166,10 +179,11 @@
 }
 .header-score span {
   display: block;
-  color: #c89b3c;
-  font-size: 9px;
+  color: var(--text-gold-primary);
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: 0.18em;
+  -webkit-font-smoothing: antialiased;
 }
 .header-score strong {
   display: block;
@@ -276,7 +290,6 @@
 .section-label {
   position: relative;
   z-index: 1;
-  color: #9dc2cc;
 }
 .calculator-grid {
   max-width: var(--shell-max);
@@ -389,7 +402,7 @@
 }
 /* Empty slot: same footprint as a filled one, dimmed so it reads as a socket. */
 .roster-row.empty b {
-  color: #5c5b57;
+  color: var(--text-muted);
   border-color: rgba(120, 90, 40, 0.34);
   font-size: 13px;
   font-weight: 500;
@@ -446,9 +459,12 @@
 }
 .round-advice-label,
 .current-options-label {
-  color: #8bd2d1;
-  font: 700 9px var(--font-ui);
+  color: var(--text-accent-cyan);
+  font-family: var(--text-display);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.14em;
+  -webkit-font-smoothing: antialiased;
 }
 .round-advice strong {
   display: block;
@@ -462,19 +478,23 @@
 }
 .round-advice span {
   display: block;
-  color: #c3d0d4;
-  font: 700 11px var(--font-ui);
+  color: var(--text-body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
 }
 .round-advice button {
   margin-top: 10px;
   padding: 7px 10px;
-  color: #f0e6d2;
+  color: var(--text-gold-highlight);
   background: #554018;
-  border: 1px solid #c89b3c;
+  border: 1px solid var(--gold);
   border-radius: 0;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
+  -webkit-font-smoothing: antialiased;
 }
 .current-options {
   position: relative;
@@ -501,10 +521,15 @@
   border-color: #0ac8b9;
   background: #0b4250;
 }
+/* The role/year/score line under a candidate name was 10px, below the floor the
+   rest of the panel holds to, so the weakest candidate looked the dimmest. */
 .current-options small {
   margin-top: 3px;
-  color: #a9c0c7;
-  font: 10px var(--font-ui);
+  color: var(--text-body);
+  font-size: 11px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .full-panel {
@@ -540,14 +565,15 @@
 }
 .role-filters button {
   padding: 9px 12px;
-  color: #aebbc4;
+  color: var(--text-body);
   background: #081522;
   border: 1px solid #4d3b20;
   border-radius: 0;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.08em;
+  -webkit-font-smoothing: antialiased;
 }
 .role-filters button:hover,
 .role-filters button.active {
@@ -570,13 +596,14 @@
 }
 .table-head {
   padding: 11px 14px;
-  color: #d1ae61;
+  color: var(--text-gold-primary);
   background: #0b1a2a;
-  font:
-    700 10px Consolas,
-    monospace;
+  font-family: var(--text-display);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
 }
 .table-row {
   width: 100%;
@@ -633,9 +660,9 @@
   object-fit: contain;
 }
 .table-row strong {
-  font:
-    700 13px Consolas,
-    monospace;
+  font-family: var(--text-display);
+  font-size: 14px;
+  font-weight: 700;
   text-align: right;
 }
 
@@ -669,53 +696,130 @@
   max-width: var(--shell-max);
   margin: 24px auto 0;
 }
+/* Two tiles per row at the shell width, like every other tab. An earlier 1080px
+   cap looked tidier but broke two things at once: the tab was narrower than its
+   siblings, and the resulting 511px tile was narrower than the widest real trio
+   needs (~515px), so those rows wrapped. */
 .combo-list {
   display: grid;
-  gap: 9px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
   margin-top: 11px;
 }
-.combo-card {
+/* Below the shell width the two columns get too narrow for a trio, so drop to
+   one. Same breakpoint the rest of the layout uses. */
+@media (max-width: 1000px) {
+  .combo-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* One combo per row, players chipped so the eye has something to land on
+   between names. */
+.synergy-row {
   display: grid;
-  grid-template-columns: 42px 1fr 65px;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 11px;
-  padding: 14px 17px;
+  gap: 18px;
+  background: rgba(4, 15, 26, 0.7);
+  border: 1px solid rgba(120, 90, 40, 0.35);
+  border-left: 3px solid transparent;
+  padding: 10px 18px;
+  margin-bottom: 6px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
-.combo-rank {
-  color: #e0b95b;
-  font:
-    600 16px "Oswald",
-    "Arial Narrow",
-    sans-serif;
+.synergy-row:hover {
+  background: rgba(14, 34, 56, 0.85);
+  border-color: var(--gold);
+  transform: translateX(3px);
 }
-.combo-members {
+/* The top three are the ones worth looking at, so they carry the gold edge. */
+.synergy-row.gold-tier {
+  border-left-color: var(--gold);
+  background: linear-gradient(
+    90deg,
+    rgba(200, 155, 60, 0.12) 0%,
+    rgba(4, 15, 26, 0.7) 40%
+  );
+}
+.synergy-rank {
+  font-family: var(--text-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-muted);
+  -webkit-font-smoothing: antialiased;
+}
+.synergy-row.gold-tier .synergy-rank {
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(200, 155, 60, 0.4);
+}
+.synergy-members {
   display: flex;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 7px;
 }
-.combo-members span {
-  color: #f0e6d2;
-  font-weight: bold;
+/* The chip plate was nearly the same value as the row behind it, so the members
+   read as loose text. A visible gold edge separates plate from row. */
+.synergy-member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(180deg, rgba(17, 32, 54, 0.95), rgba(6, 16, 29, 0.95));
+  border: 1px solid rgba(200, 155, 60, 0.45);
+  padding: 3px 8px 3px 5px;
 }
-.combo-members small {
-  color: #9ec1c7;
-  font:
-    700 9px Consolas,
-    monospace;
+.synergy-member-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gold-highlight);
+  -webkit-font-smoothing: antialiased;
 }
-.combo-power {
-  color: #f0c55d;
-  font:
-    700 18px Consolas,
-    monospace;
-  text-align: right;
+.synergy-role-badge {
+  font-family: var(--text-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-accent-cyan);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
 }
-.combo-meta {
-  grid-column: 2/-1;
-  color: #b7c4ca;
-  font:
-    700 10px Consolas,
-    monospace;
+.synergy-link-symbol {
+  color: var(--text-gold-primary);
+  font-size: 13px;
+}
+/* The formula is the part that was unreadable: muted grey on dark blue at 10px.
+   Bonuses and penalties get their own colour so the signs read at a glance. */
+.synergy-formula-breakdown {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--text-muted);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+.synergy-formula-breakdown .val-bonus {
+  color: var(--text-accent-cyan);
+}
+.synergy-formula-breakdown .val-malus {
+  color: var(--text-accent-red);
+}
+.synergy-score-val {
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 10px rgba(200, 155, 60, 0.3);
 }
 .combo-intro {
   margin-bottom: 26px;
@@ -736,10 +840,13 @@
   min-width: 0;
 }
 .match-col-label {
-  color: var(--gold);
-  font: 700 9px var(--font-ui);
+  color: var(--text-gold-primary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-align: center;
+  -webkit-font-smoothing: antialiased;
 }
 .match-chip {
   /* Score sits under the name: a 5-column split is too narrow for both on one
@@ -749,13 +856,16 @@
   gap: 2px;
   min-width: 0;
   padding: 5px 6px;
-  color: #d4e0e2;
   background: #071c2b;
   border: 1px solid #386579;
   border-radius: 0;
   cursor: pointer;
   text-align: left;
-  font: 700 11px var(--font-ui);
+  color: var(--text-body);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
 }
 .match-chip span {
   overflow: hidden;
@@ -763,9 +873,12 @@
   white-space: nowrap;
 }
 .match-chip em {
-  color: #e4b852;
-  font: 700 10px var(--font-ui);
+  color: var(--text-gold-primary);
+  font-family: var(--text-display);
+  font-size: 12px;
+  font-weight: 700;
   font-style: normal;
+  -webkit-font-smoothing: antialiased;
 }
 .match-chip:hover {
   color: #f0e6d2;
@@ -890,7 +1003,7 @@
   text-shadow: 0 0 12px rgba(10, 200, 185, 0.35);
 }
 .round-advice span {
-  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-family: var(--text-display);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -917,15 +1030,16 @@
   background: linear-gradient(145deg, #124454, #09222d);
 }
 .current-options > button span {
-  color: #f0e6d2;
+  color: var(--text-gold-highlight);
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
 }
 .current-options > button small {
   max-width: 100%;
-  color: #9ed0d0;
-  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  color: var(--text-accent-cyan);
+  font-family: var(--text-display);
   font-size: 11px;
   font-weight: 700;
   line-height: 1.15;
@@ -1061,13 +1175,16 @@
 }
 .team-clear {
   padding: 3px 8px;
-  color: #9fc0c7;
+  color: var(--text-body);
   background: transparent;
   border: 1px solid #386579;
   border-radius: 0;
   cursor: pointer;
-  font: 700 9px var(--font-ui);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
+  -webkit-font-smoothing: antialiased;
 }
 .team-clear:hover {
   color: #f0e6d2;
@@ -1099,8 +1216,10 @@
   background: #0a1622;
   border: 1px solid var(--gold-dark);
   border-radius: 3px;
-  color: var(--gold);
-  font: 700 11px var(--font-ui);
+  color: var(--text-gold-primary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.04em;
 }
 .team-search-wrap {
@@ -1190,7 +1309,7 @@
   justify-content: center;
   margin: 9px 0 1px;
   border: 1px dashed rgba(120, 90, 40, 0.22);
-  color: #6e6a5c;
+  color: var(--text-muted);
   font-size: 11px;
   text-align: center;
 }
@@ -1208,7 +1327,7 @@
    full roster takes 3 lines instead of 4. */
 .team-block .match-chip {
   padding: 5px 5px;
-  font-size: 10px;
+  font-size: 11px;
 }
 @media (max-width: 1000px) {
   /* Three narrow columns instead of five: names stop being truncated to 2 chars. */
@@ -1369,8 +1488,10 @@
 }
 .shot-kbd {
   display: inline-block;
-  font: 700 11px var(--font-ui);
-  color: var(--blue);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-accent-cyan);
   background: var(--panel);
   border: 1px solid rgba(10, 200, 185, 0.4);
   padding: 1px 6px;
@@ -1560,10 +1681,11 @@
 }
 .summary-tier-score span {
   display: block;
-  color: #c89b3c;
-  font-size: 10px;
+  color: var(--text-gold-primary);
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
+  -webkit-font-smoothing: antialiased;
 }
 .summary-tier-score b {
   font-size: 22px;
@@ -1617,11 +1739,12 @@
 }
 .summary-stat-lbl {
   margin-top: 2px;
-  color: #c89b3c;
-  font-size: 10px;
+  color: var(--text-gold-primary);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
 }
 .tag-row {
   display: flex;
@@ -1634,14 +1757,17 @@
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  color: #b6c1c9;
+  color: var(--text-body);
   background: rgba(9, 20, 40, 0.7);
   border: 1px solid #785a28;
-  font: 700 11px "Jura", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
 }
 .tag-badge.synergy {
-  color: #0ac8b9;
+  color: var(--text-accent-cyan);
 }
 /* Loading-screen roster: 5 vertical champion cards. */
 .lol-roster-grid {
@@ -1752,27 +1878,36 @@
   box-shadow: inset 0 3px 0 #c89b3c;
 }
 .lol-player-name {
-  color: #fff;
+  color: var(--text-gold-highlight);
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.03em;
+  -webkit-font-smoothing: antialiased;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .lol-player-meta {
   margin: 2px 0 4px;
-  color: #c89b3c;
-  font: 600 11px "Jura", "Segoe UI", sans-serif;
+  color: var(--text-gold-primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  font-family: var(--font-ui);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  -webkit-font-smoothing: antialiased;
 }
 .lol-player-stats-mini {
   display: flex;
   justify-content: center;
   gap: 8px;
-  color: #0ac8b9;
-  font: 700 11px "Jura", "Segoe UI", sans-serif;
+  color: var(--text-accent-cyan);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
 }
 .style-arrow {
   font-style: normal;
@@ -1796,4 +1931,247 @@
   .lol-roster-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+.stage-chances {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.stage-ceiling {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 0 14px;
+}
+.stage-ceiling b {
+  color: #ffd479;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+.stage-ceiling span {
+  color: var(--text-body);
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+.stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stage-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 52px 190px;
+  align-items: center;
+  gap: 12px;
+}
+.stage-name {
+  display: flex;
+  flex-direction: column;
+}
+.stage-name b {
+  color: var(--text-gold-highlight);
+  font-family: var(--text-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.stage-name small {
+  margin-top: 2px;
+  color: var(--text-body);
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+}
+.stage-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.stage-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3d7fd6, #ffd479);
+}
+.stage-pct {
+  color: var(--text-gold-primary);
+  font-family: var(--text-display);
+  font-weight: 700;
+  font-size: 14px;
+  text-align: right;
+}
+/* Margin against the cutoff: cyan when there is headroom, red when short. The
+   sign lives on the text itself, so the two states are distinguishable without
+   relying on colour alone. */
+.stage-why {
+  color: var(--text-accent-cyan);
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+.stage-why.short {
+  color: var(--text-accent-red);
+}
+/* The base/carry/weak breakdown explains the number above it, so it stays on
+   screen rather than hiding behind a hover: the score depends on it, and
+   hover-only detail is unreachable by keyboard and touch. Styled as a quiet
+   caption with the two signed numbers coloured so the sign reads instantly. */
+.stage-explain {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.stage-explain b {
+  color: var(--text-body);
+  font-weight: 700;
+}
+.stage-explain .plus {
+  color: var(--text-accent-cyan);
+}
+.stage-explain .minus {
+  color: var(--text-accent-red);
+}
+@media (max-width: 720px) {
+  .stage-row {
+    grid-template-columns: 1fr 52px;
+    grid-template-areas: "name pct" "bar bar" "why why";
+  }
+  .stage-name { grid-area: name; }
+  .stage-bar { grid-area: bar; }
+  .stage-pct { grid-area: pct; }
+  .stage-why { grid-area: why; }
+}
+/* Section heading above each list: gold, wide-tracked, uppercase, matching the
+   app's other .section-label rhythm but readable at 11px (was inherited #9dc2cc
+   at 10px, which read as body text rather than a heading). */
+.combo-section > .section-label {
+  color: var(--gold);
+  font-family: "Rajdhani", "Bahnschrift", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+/* Same role as .muted elsewhere in a panel, so it takes the same size and
+   colour. At 12px in a dimmer grey it read as a caption rather than as the
+   explanation of the list below it. */
+.combo-note {
+  margin: 0 0 12px;
+  color: var(--text-body);
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 82ch;
+}
+.leaderboard {
+  margin-top: 18px;
+}
+
+.leader-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.leader-list li {
+  display: grid;
+  grid-template-columns: 22px 52px 1fr;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.leader-list b {
+  font-variant-numeric: tabular-nums;
+  color: #f0d17a;
+}
+
+.leader-list small {
+  color: var(--text-body);
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+}
+
+.leader-rank {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.coverage {
+  margin-top: 18px;
+}
+
+.coverage-verdict {
+  margin: 6px 0 10px;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  color: #f0d17a;
+}
+
+.coverage-verdict span {
+  font-size: 13px;
+  color: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.coverage-list {
+  display: grid;
+  gap: 5px;
+}
+
+.coverage-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+
+.coverage-name {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.coverage-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.coverage-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #6d7ba8, #f0d17a);
+}
+
+.coverage-val {
+  font-size: 12px;
+  text-align: right;
+  color: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+.coverage-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-body);
+  max-width: 82ch;
+  -webkit-font-smoothing: antialiased;
 }

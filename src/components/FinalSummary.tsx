@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { calculateTeamScore, getScoreTone } from "../lib/scoring";
+import {
+  calculateTeamScore,
+  getScoreTone,
+  scoreBreakdown,
+} from "../lib/scoring";
+import { stageCeiling, stageChances } from "../lib/stages";
+import { coverageAxes, coverageScore, weakestAxis } from "../lib/coverage";
+import type { LeaderRow } from "../lib/leaderboard";
 import { playerPhoto, teamLogo } from "../lib/logos";
 import { ROLE_ICON } from "../lib/roles";
 import { ROLE_ORDER } from "../lib/teams";
@@ -86,9 +93,11 @@ function PlayerCard({ player, isMvp }: { player: Player; isMvp: boolean }) {
 export function FinalSummary({
   picked,
   allPlayers,
+  board,
 }: {
   picked: Player[];
   allPlayers: Player[];
+  board: LeaderRow[];
 }) {
   const score = calculateTeamScore(picked);
   const tier = tierFor(score);
@@ -116,6 +125,17 @@ export function FinalSummary({
     (best, player) => (player.score > best.score ? player : best),
     picked[0],
   );
+
+  // Fitted on the 205 real lineups in the ratings file, so the cutoffs follow the
+  // data rather than loldle's 81/84/92/97, which sit above our whole power range.
+  const breakdown = scoreBreakdown(picked);
+  const chances = stageChances(allPlayers, breakdown.power);
+  const ceiling = stageCeiling(chances);
+
+  // Kept strictly apart from the score above: an axis gap is a description of
+  // the roster's shape, not a number that competes with power.
+  const coverage = coverageAxes(picked, allPlayers);
+  const coverageGap = weakestAxis(coverage);
 
   const styleBadges = STYLE_STATS.flatMap((style) => {
     const teamAvg = mean(statValues(picked, style.stat, style.roles));
@@ -221,6 +241,94 @@ export function FinalSummary({
               {tag.label}
             </span>
           ))}
+        </div>
+      )}
+
+      <div className="stage-chances">
+        <div className="section-label">ШАНСЫ НА СТАДИИ</div>
+        <div className="stage-ceiling">
+          Потолок:{" "}
+          <b>{ceiling ? ceiling.label : "ниже четвертьфинала"}</b>
+          <span>пороги посчитаны по 205 реальным составам Worlds 2013–2025</span>
+        </div>
+        <div className="stage-list">
+          {chances.map((chance) => (
+            <div className="stage-row" key={chance.id}>
+              <div className="stage-name">
+                <b>{chance.label}</b>
+                <small>{chance.unlocks}</small>
+              </div>
+              <div className="stage-bar">
+                <i style={{ width: `${(chance.chance * 100).toFixed(1)}%` }} />
+              </div>
+              <div className="stage-pct">{Math.round(chance.chance * 100)}%</div>
+              <div
+                className={
+                  chance.margin >= 0 ? "stage-why" : "stage-why short"
+                }
+              >
+                {chance.margin >= 0
+                  ? `запас ${chance.margin.toFixed(1)}`
+                  : `не хватает ${(-chance.margin).toFixed(1)}`}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="stage-explain">
+          база <b>{breakdown.base.toFixed(1)}</b> · связка{" "}
+          <b className="plus">+{breakdown.carryBonus.toFixed(2)}</b> ·
+          слабое звено <b className="minus">−{breakdown.weakPenalty.toFixed(2)}</b>
+          {breakdown.weakRole ? ` (${breakdown.weakRole})` : ""}
+        </div>
+      </div>
+
+      {coverage.length > 0 && (
+        <div className="coverage">
+          <div className="section-label">
+            ПОКРЫТИЕ СОСТАВА · ЭВРИСТИКА
+          </div>
+          <div className="coverage-verdict">
+            {coverageScore(coverage).toFixed(0)} / 100
+            {coverageGap !== null && (
+              <span>
+                {" "}
+                · слабое место: {coverageGap.label.toLowerCase()} (−
+                {coverageGap.gap.toFixed(0)})
+              </span>
+            )}
+          </div>
+          <div className="coverage-list">
+            {coverage.map((axis) => (
+              <div className="coverage-row" key={axis.key}>
+                <span className="coverage-name">{axis.label}</span>
+                <span className="coverage-bar">
+                  <i style={{ width: `${axis.value.toFixed(1)}%` }} />
+                </span>
+                <span className="coverage-val">{axis.value.toFixed(0)}</span>
+              </div>
+            ))}
+          </div>
+          <p className="coverage-note">
+            Оценка по имеющимся статам относительно всех составов датасета. Это
+            эвристика: в score она не входит, пороги стадий не меняет.
+          </p>
+        </div>
+      )}
+
+      {board.length > 0 && (
+        <div className="leaderboard">
+          <div className="section-label">РЕКОРДЫ</div>
+          <ol className="leader-list">
+            {board.slice(0, 5).map((row, index) => (
+              <li key={`${row.power}-${row.at}`}>
+                <span className="leader-rank">{index + 1}</span>
+                <b>{row.power.toFixed(1)}</b>
+                <small>
+                  {row.picks} {row.picks === 1 ? "пик" : "пиков"} · {row.at}
+                </small>
+              </li>
+            ))}
+          </ol>
         </div>
       )}
     </section>

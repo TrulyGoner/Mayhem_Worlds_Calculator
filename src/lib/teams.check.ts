@@ -4,7 +4,16 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import type { Player, Role } from "../types/game.ts";
 import { playerPhoto, teamLogo } from "./logos.ts";
-import { calculateTeamScore, scoreBreakdown, withTies } from "./scoring.ts";
+import {
+  calculateTeamScore,
+  scoreBreakdown,
+  withTies,
+} from "./scoring.ts";
+import { stageCeiling, stageChances } from "./stages.ts";
+import { coverageAxes, coverageScore, weakestAxis } from "./coverage.ts";
+import { buildCombos } from "./combos.ts";
+import { clearBoard, loadBoard, recordResult } from "./leaderboard.ts";
+import { parsePlayer } from "../data/ratings.ts";
 import { freeYears, inferYearFromRoster, rosterFor, yearsFor } from "./teams.ts";
 import { bestTeamMatch, pickYear } from "./fuzzy.ts";
 
@@ -13,10 +22,14 @@ type RatingRow = {
   team: string;
   year: number;
   position: string;
+  placement: string;
   // The JSON carries no `score` column: the app takes it from
   // adjusted_competition_score in src/data/ratings.ts (bonuses are already
   // folded into that value). The score assertions below mirror that formula.
   adjusted_competition_score: number;
+  games: unknown;
+  raw_stat_values: unknown;
+  confidence_multiplier: unknown;
 };
 
 const rows: RatingRow[] = JSON.parse(
@@ -33,7 +46,15 @@ const players: Player[] = rows.map((row) => ({
   score: row.adjusted_competition_score,
   year: row.year,
   team: row.team,
+  placement: row.placement as Player["placement"],
 }));
+
+// The extended stats only exist after the real loader has parsed
+// raw_stat_values, and coverage reads exactly those. Built through parsePlayer
+// so the assertions below cannot drift away from what the app actually shows.
+const statPlayers: Player[] = rows.map((row, index) =>
+  parsePlayer(row, index),
+);
 
 const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 const teams = [...new Set(players.map((player) => player.team))].sort();
@@ -488,6 +509,292 @@ assert.deepEqual(
     { year: 2014, candidates: [2014] },
     "the real card header with the mangled badge still pins 2014",
   );
+}
+
+// Stage chances are a logistic fit over the real historical lineups, so the
+// properties that matter are shape properties, not fixed numbers: chances stay in
+// range, rise with power, tighten in the same order as their cutoffs, and the
+// ceiling is the hardest stage still above a coin flip.
+{
+  const STAGE_IDS = ["WINNER", "FINALIST", "SEMIFINALIST", "QUARTERFINALIST"];
+  const ladder = [60, 72, 78, 82, 86, 89, 92, 96];
+  const perPower = ladder.map((power) => stageChances(players, power));
+
+  for (const [index, chances] of perPower.entries()) {
+    const power = ladder[index];
+    assert.equal(chances.length, 4, `expected 4 stages at power ${power}`);
+    for (const chance of chances) {
+      assert.ok(
+        chance.chance >= 0 && chance.chance <= 1,
+        `chance out of range at power ${power}: ${chance.chance}`,
+      );
+      assert.ok(Number.isFinite(chance.cutoff), `cutoff not finite at ${power}`);
+      assert.ok(
+        Math.abs(chance.margin - (power - chance.cutoff)) < 1e-9,
+        "margin must be power minus cutoff",
+      );
+    }
+    // Tightest stage first, so a bigger cutoff means a harder stage.
+    assert.deepEqual(
+      chances.map((chance) => chance.id),
+      STAGE_IDS,
+      `stages out of order at power ${power}`,
+    );
+    assert.ok(
+      chances.every(
+        (chance, i) => i === 0 || chance.cutoff < chances[i - 1].cutoff,
+      ),
+      `cutoffs must decrease down the list at power ${power}`,
+    );
+  }
+
+  // More power can only help. Compared stage to stage, not across the sorted
+  // list, since the ordering is by cutoff and not by the queried power.
+  for (const id of STAGE_IDS) {
+    const series = perPower.map(
+      (chances) => chances.find((chance) => chance.id === id)!,
+    );
+    for (let i = 1; i < series.length; i++) {
+      assert.ok(
+        series[i].chance >= series[i - 1].chance - 1e-9,
+        `${id} chance fell from ${series[i - 1].chance} to ${series[i].chance}`,
+      );
+    }
+  }
+
+  // Anchors on the fitted cutoffs. The best real lineup sits at 95.1, so these
+  // only hold because the cutoffs come from our own power scale rather than
+  // loldle's 81/84/92/97, whose 97 is above anything this dataset can produce.
+  const champion = stageChances(players, 89.5).find((c) => c.id === "WINNER")!;
+  assert.ok(
+    Math.abs(champion.chance - 0.5) < 0.05,
+    `championship must be a coin flip at its own cutoff, got ${champion.chance}`,
+  );
+  for (const chance of stageChances(players, 95.1)) {
+    assert.ok(
+      chance.chance > 0.95,
+      `the strongest real lineup should clear ${chance.id}, got ${chance.chance}`,
+    );
+  }
+
+  // Ceiling is the hardest stage still above 50%, not the biggest percentage,
+  // which always belongs to the easiest stage once the curve saturates.
+  assert.equal(stageCeiling(stageChances(players, 60))?.id, undefined);
+  assert.equal(stageCeiling(stageChances(players, 96))?.id, "WINNER");
+
+  // A partial roster must not produce NaN, and an empty list must not throw.
+  const partial = scoreBreakdown(players.slice(0, 3));
+  for (const chance of stageChances(players, partial.power)) {
+    assert.ok(Number.isFinite(chance.chance), "partial roster gave NaN");
+  }
+  for (const chance of stageChances([], 90)) {
+    assert.equal(chance.chance, 0, "no ratings rows must fall back to zero");
+  }
+  for (const chance of stageChances(players, 0)) {
+    assert.equal(chance.chance, 0, "zero power must fall back to zero");
+  }
+}
+
+{
+  // Coverage is a designed heuristic over four stat groups, so the assertions are
+  // about its shape and its independence from the score, not about a threshold.
+  const axes = coverageAxes(statPlayers.slice(0, 5), statPlayers);
+  assert.ok(axes.length > 0, "a full roster must expose at least one axis");
+  for (const axis of axes) {
+    assert.ok(
+      axis.value >= 0 && axis.value <= 100,
+      `axis ${axis.key} escaped 0..100: ${axis.value}`,
+    );
+  }
+
+  // Normalisation has to actually separate rosters, otherwise every axis would
+  // read the same. A roster of the five best raw values on one stat must beat the
+  // five highest-rated players on that axis — score and raw stats genuinely
+  // disagree, so this is what proves the axis is measuring something.
+  const statOf: Record<string, "goldDiff15" | "kp" | "dpm" | "clearWards"> = {
+    lane: "goldDiff15",
+    fight: "kp",
+    damage: "dpm",
+    vision: "clearWards",
+  };
+  const byScore = coverageAxes(
+    [...statPlayers].sort((left, right) => right.score - left.score).slice(0, 5),
+    statPlayers,
+  );
+  for (const axis of byScore) {
+    const stat = statOf[axis.key];
+    const specialists = coverageAxes(
+      [...statPlayers]
+        .filter((player) => player[stat] !== undefined)
+        .sort((left, right) => right[stat]! - left[stat]!)
+        .slice(0, 5),
+      statPlayers,
+    ).find((candidate) => candidate.key === axis.key);
+    assert.ok(
+      specialists !== undefined && specialists.value > axis.value,
+      `axis ${axis.key} did not separate specialists (${axis.key}) from the top-rated roster`,
+    );
+  }
+
+  // An empty roster or an empty baseline has nothing to measure, so it reports no
+  // axis rather than inventing a flat 50 that would read as "perfectly balanced".
+  assert.deepEqual(coverageAxes([], statPlayers), []);
+  assert.deepEqual(coverageAxes([statPlayers[0]], []), []);
+
+  const gap = weakestAxis(axes);
+  assert.ok(gap === null || gap.gap >= 0, "axis gap cannot be negative");
+  // A single measured axis has nothing to compare against, so it reports no gap
+  // instead of a fake 0 that would read as "perfectly balanced".
+  assert.equal(weakestAxis(axes.slice(0, 1)), null);
+
+  // Deterministic: the same roster against the same baseline must not drift
+  // between renders, or the bars would flicker as the summary re-computes.
+  const roster = statPlayers.slice(0, 5);
+  assert.deepEqual(
+    coverageAxes(roster, statPlayers),
+    coverageAxes(roster, statPlayers),
+  );
+  assert.ok(
+    coverageScore(axes) > 0,
+    "a roster with stats must score above zero on coverage",
+  );
+}
+
+{
+  // Node has no localStorage, and the module deliberately never lets a storage
+  // failure escape, so the stub is the only way to exercise the failure paths.
+  const store = new Map<string, string>();
+  let failWrites = false;
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    value: {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        if (failWrites) throw new Error("quota exceeded");
+        store.set(key, value);
+      },
+      removeItem: (key: string) => {
+        store.delete(key);
+      },
+    },
+  });
+
+  clearBoard();
+  assert.deepEqual(loadBoard(), [], "a cleared board reads empty");
+
+  // Descending by power, and a repeated score replaces its own row instead of
+  // stacking up duplicate leaderboard entries.
+  let board = recordResult(70, 3);
+  board = recordResult(88, 5);
+  board = recordResult(75, 4);
+  board = recordResult(88, 5);
+  assert.deepEqual(
+    board.map((row) => row.power),
+    [88, 75, 70],
+  );
+  assert.equal(loadBoard().length, 3, "the board must survive a reload");
+  assert.equal(loadBoard()[0].picks, 5);
+
+  // Top 10 only.
+  for (let index = 0; index < 20; index += 1) {
+    board = recordResult(index, 5);
+  }
+  assert.equal(board.length, 10, "the board is capped at ten rows");
+  // 88/75/70 outrank everything in 0..19, so the invariant worth asserting is
+  // the ordering itself, not any particular row landing at a given index.
+  assert.deepEqual(
+    board.map((row) => row.power),
+    [...board.map((row) => row.power)].sort((left, right) => right - left),
+  );
+  assert.equal(board[0].power, 88, "the best score leads the board");
+
+  // A quota failure must not throw and must not corrupt what is in memory.
+  failWrites = true;
+  board = recordResult(99, 5);
+  assert.equal(board[0].power, 99, "the returned board survives a refused write");
+  failWrites = false;
+
+  // Anything unreadable in storage degrades to an empty board rather than
+  // rendering NaN rows.
+  for (const key of store.keys()) store.set(key, "{not json");
+  assert.deepEqual(loadBoard(), [], "corrupt storage reads as empty");
+  store.set("cacl.leaderboard.v1", JSON.stringify([{ nope: 1 }, 7, null]));
+  assert.deepEqual(loadBoard(), [], "wrongly shaped rows are dropped");
+
+  clearBoard();
+  Reflect.deleteProperty(globalThis, "localStorage");
+}
+
+{
+  // Combos used to be read from worlds_analysis.json, which generated them by
+  // permuting players: one trio took the top six rows with an identical score.
+  // A combo is a set, so the list must never contain the same set twice.
+  const { pairs, trios } = buildCombos(statPlayers);
+  assert.ok(pairs.length > 12, `expected a real ranking, got ${pairs.length}`);
+  assert.ok(trios.length > 12, `expected a real ranking, got ${trios.length}`);
+
+  for (const [label, list, size] of [
+    ["pairs", pairs, 2],
+    ["trios", trios, 3],
+  ] as const) {
+    const keys = list.map((combo) =>
+      combo.players
+        .map((player) => player.id)
+        .sort()
+        .join("-"),
+    );
+    assert.equal(
+      new Set(keys).size,
+      keys.length,
+      `${label} repeat the same player set`,
+    );
+
+    for (const combo of list) {
+      const roles = combo.players.map((player) => player.role);
+      assert.equal(
+        new Set(roles).size,
+        roles.length,
+        `${label} repeats a role inside one combo: ${roles.join(",")}`,
+      );
+      assert.equal(combo.players.length, size, `${label} has the wrong size`);
+    }
+
+    // Descending, and on the same scale as a real roster score — the old file
+    // reported 99.7 for a trio the ratings put at 89.
+    assert.deepEqual(
+      list.map((combo) => Math.round(combo.power * 10)),
+      list
+        .map((combo) => Math.round(combo.power * 10))
+        .sort((left, right) => right - left),
+      `${label} are not ranked by descending power`,
+    );
+    assert.ok(
+      list[0].power <=
+        Math.max(...statPlayers.map((player) => player.score)) + 1e-9,
+      `${label} top power ${list[0].power} exceeds the best player score, so it is not on the ratings scale`,
+    );
+
+    // Pairs cancel their two dispersion terms exactly; a trio does not.
+    if (size === 2) {
+      assert.ok(
+        list.every(
+          (combo) =>
+            Math.abs(combo.carry - combo.weak) < 1e-9,
+        ),
+        "a pair must have carry === weak",
+      );
+    } else {
+      assert.ok(
+        list.some((combo) => combo.carry > 0 || combo.weak > 0),
+        "a trio must expose a dispersion term",
+      );
+    }
+  }
+
+  // The top row of each list has to be a real pair/trio, not a placeholder.
+  assert.equal(pairs[0].players.length, 2);
+  assert.equal(trios[0].players.length, 3);
+  assert.deepEqual(buildCombos([]), { pairs: [], trios: [] });
 }
 
 console.log(
