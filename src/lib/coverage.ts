@@ -1,4 +1,4 @@
-import type { Player, Role } from "../types/game";
+import type { Player, Role } from "./game";
 
 export type CoverageAxis = {
   key: string;

@@ -1,5 +1,5 @@
 import { scoreBreakdown } from "./scoring.ts";
-import type { Player, Role } from "../types/game";
+import type { Player, Role } from "./game";
 
 export type Combo = {
   players: Player[];

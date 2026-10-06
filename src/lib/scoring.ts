@@ -1,4 +1,4 @@
-import type { Player, Role, TeamOption } from "../types/game";
+import type { Player, Role, TeamOption } from "./game";
 
 const roleWeights: Record<Role, number> = {
   TOP: 0.17,

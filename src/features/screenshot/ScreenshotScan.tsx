@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Player } from "../types/game";
-import { type TeamSlot, inferYearFromRoster, yearsFor } from "../lib/teams";
-import { bestTeamMatch, normalize, pickYear } from "../lib/fuzzy";
-import { CARD_ROIS, COLUMN_CROP, type CardRegion, cropCard, drawRegions } from "../lib/screenshot";
-import { recognizeCard } from "../lib/ocr";
+import type { Player } from "../../lib/game";
+import { type TeamSlot, inferYearFromRoster, yearsFor } from "../../lib/teams";
+import { bestTeamMatch, normalize, pickYear } from "../../lib/fuzzy";
+import { CARD_ROIS, COLUMN_CROP, type CardRegion, cropCard, drawRegions } from "../../lib/screenshot";
+import { recognizeCard } from "../../lib/ocr";
 
 type Props = {
   players: Player[];

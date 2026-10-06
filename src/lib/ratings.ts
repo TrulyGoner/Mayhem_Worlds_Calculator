@@ -1,4 +1,4 @@
-import type { Placement, Player, Role } from "../types/game";
+import type { Placement, Player, Role } from "./game";
 
 type RawPlayerRow = {
   player: unknown;

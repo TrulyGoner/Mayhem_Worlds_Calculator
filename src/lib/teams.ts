@@ -1,4 +1,4 @@
-import type { Player, Role } from "../types/game";
+import type { Player, Role } from "./game";
 import { normalize } from "./fuzzy.ts";
 
 export const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];

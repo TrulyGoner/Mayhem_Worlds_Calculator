@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
-import type { Player, Role } from "../types/game.ts";
+import type { Player, Role } from "./game.ts";
 import { playerPhoto, teamLogo } from "./logos.ts";
 import {
   calculateTeamScore,
@@ -13,7 +13,7 @@ import { stageCeiling, stageChances } from "./stages.ts";
 import { coverageAxes, coverageScore, weakestAxis } from "./coverage.ts";
 import { buildCombos } from "./combos.ts";
 import { clearBoard, loadBoard, recordResult } from "./leaderboard.ts";
-import { parsePlayer } from "../data/ratings.ts";
+import { parsePlayer } from "./ratings.ts";
 import { freeYears, inferYearFromRoster, rosterFor, yearsFor } from "./teams.ts";
 import { bestTeamMatch, pickYear } from "./fuzzy.ts";
 
@@ -24,7 +24,7 @@ type RatingRow = {
   position: string;
   placement: string;
   // The JSON carries no `score` column: the app takes it from
-  // adjusted_competition_score in src/data/ratings.ts (bonuses are already
+  // adjusted_competition_score in src/lib/ratings.ts (bonuses are already
   // folded into that value). The score assertions below mirror that formula.
   adjusted_competition_score: number;
   games: unknown;

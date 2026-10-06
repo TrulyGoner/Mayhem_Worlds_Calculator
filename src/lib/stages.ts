@@ -1,5 +1,5 @@
 import { scoreBreakdown } from "./scoring.ts";
-import type { Placement, Player, Role } from "../types/game";
+import type { Placement, Player, Role } from "./game";
 
 const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 

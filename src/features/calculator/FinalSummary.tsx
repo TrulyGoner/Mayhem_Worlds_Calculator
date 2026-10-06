@@ -3,14 +3,14 @@ import {
   calculateTeamScore,
   getScoreTone,
   scoreBreakdown,
-} from "../lib/scoring";
-import { stageCeiling, stageChances } from "../lib/stages";
-import { coverageAxes, coverageScore, weakestAxis } from "../lib/coverage";
-import type { LeaderRow } from "../lib/leaderboard";
-import { playerPhoto, teamLogo } from "../lib/logos";
-import { ROLE_ICON } from "../lib/roles";
-import { ROLE_ORDER } from "../lib/teams";
-import type { Player, Role } from "../types/game";
+} from "../../lib/scoring";
+import { stageCeiling, stageChances } from "../../lib/stages";
+import { coverageAxes, coverageScore, weakestAxis } from "../../lib/coverage";
+import type { LeaderRow } from "../../lib/leaderboard";
+import { playerPhoto, teamLogo } from "../../lib/logos";
+import { ROLE_ICON } from "../../lib/roles";
+import { ROLE_ORDER } from "../../lib/teams";
+import type { Player, Role } from "../../lib/game";
 
 function mean(values: number[]): number | null {
   if (values.length === 0) return null;

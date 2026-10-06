@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
-import type { Player, Role } from "../types/game";
-import { teamLogo } from "../lib/logos";
+import type { Player, Role } from "../../lib/game";
+import { teamLogo } from "../../lib/logos";
 import {
   ROLE_ORDER,
   freeYears,
   rosterFor,
   yearsFor,
   type TeamSlot,
-} from "../lib/teams";
-import { TEAM_ALIASES } from "../lib/fuzzy";
+} from "../../lib/teams";
+import { TEAM_ALIASES } from "../../lib/fuzzy";
 
 type Props = {
   players: Player[];
