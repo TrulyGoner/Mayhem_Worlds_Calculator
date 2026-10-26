@@ -1,32 +1,145 @@
-# React + TypeScript + Vite
+# Worlds Mayhem Analytics (Cacl)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Аналитический калькулятор драфта, база знаний игроков Worlds и оверлей-ассистент для мини-игры **Worlds Mayhem** на [LoLdle](https://loldle.net/worldsMayhem).
 
-Currently, two official plugins are available:
+Помогает собирать сильнейший состав из 5 ролей, рассчитывать математическое ожидание реролла, оценивать шансы на прохождение стадий турнира (вплоть до чемпиона) и автоматизировать драфт прямо поверх игры через браузерное расширение или OCR со скриншота.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Возможности
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Калькулятор драфта в реальном времени**:
+  - Учёт ролевых весов (`TOP`, `JUNGLE`, `MID`, `ADC`, `SUPPORT`).
+  - Бонус за звёздных игроков (Carry Bonus) и штраф за слабейшую позицию (Weak Penalty).
+  - Оценка математического ожидания реролла через метод Монте-Карло с псевдослучайной фиксацией зерна (seed).
+  - Расчёт шансов выхода в четвертьфинал, полуфинал, финал и завоевания чемпионского титула на основе двухпараметрической логистической регрессии по реальным историческим составам Worlds.
+  - Оценка гармоничности состава по 4 осям: *Линия* (Gold diff@15), *Тимфайты* (KP), *Урон* (DPM), *Вижн* (Clear wards).
 
-## Expanding the Oxlint configuration
+- **Распознавание карточек по скриншоту (OCR)**:
+  - Вставка скриншота из буфера обмена (`Ctrl+V`) или перетаскивание файла.
+  - Автономный клиентский OCR на базе движка Tesseract.js (WASM + LSTM) — работает без интернета и не отправляет изображения на сервер.
+  - Интерактивная настройка зон сканирования (ROI) с сохранением координат.
+  - Нечёткое сопоставление названий команд (Levenshtein / sliding window) и автоматическое восстановление года по составу игроков.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- **База данных и рейтинг 500+ игроков Worlds (2013–2024)**:
+  - Таблица с мгновенным поиском по никнейму и тегу команды.
+  - Фильтры по ролям, статистика побед (WinRate), KDA и надежность выборки.
+  - Фото игроков и логотипы клубов.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+- **Оптимальные комбинации (Связки)**:
+  - Рейтинг лучших пар и троек игроков с расчетом чистой синергии.
+
+- **Браузерное расширение (Manifest V3)**:
+  - Легковесный оверлей прямо на странице `loldle.net/worldsMayhem`.
+  - Автоматическое определение стадии, раунда и доступных карт.
+  - Рекомендация лучшего выбора в текущем раунде и симуляция матча против оппонента.
+
+---
+
+## Стек технологий
+
+- **Фреймворк**: [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
+- **Сборка**: [Vite 8](https://vite.dev/) с разделением кода на асинхронные чанки (`React.lazy`)
+- **Линтер**: [Oxlint](https://oxc.rs/) (анализ AST за десятки миллисекунд)
+- **OCR**: [Tesseract.js 7](https://tesseract.projectnaptha.com/) (локальные SIMD/Relaxed-SIMD WASM-ядра и сжатые модели `.traineddata.gz`)
+- **Обработка графики**: [Sharp](https://sharp.pixelplumbing.com/) (автоматическая нарезка лиц 128×128 и конвертация логотипов в WebP)
+- **Расширение**: Chromium & Firefox Manifest V3 Shadow DOM Overlay
+
+---
+
+## Структура проекта
+
+```
+cacl/
+├── extension/             # Исходный код расширения браузера
+│   ├── manifest.json      # Манифест Chrome/Firefox MV3
+│   ├── content.js         # Скрипт оверлея и парсинга страницы игры
+│   └── content.css        # Стили панели расширения
+├── public/
+│   ├── data/              # Оптимизированный датасет игроков (worlds_mayhem_ratings.json)
+│   ├── players/           # Нарезка лиц игроков (WebP, 128x128)
+│   ├── teams/             # Векторные и WebP логотипы команд Worlds
+│   ├── tessdata/          # Языковая модель Tesseract (eng.traineddata.gz)
+│   └── tesseract/         # WASM-ядра и воркеры Tesseract.js
+├── scripts/
+│   └── build-extension.mjs # Сборка легковесного дистрибутива расширения
+├── src/
+│   ├── features/
+│   │   ├── calculator/    # Калькулятор пиков, RosterPanel, TeamPicker, FinalSummary
+│   │   ├── combos/        # Вкладка анализа пар и троек (CombosTab, ComboList)
+│   │   ├── rating/        # Таблица рейтинга игроков с пагинацией и поиском
+│   │   └── screenshot/    # Сканер скриншотов с интерактивной сеткой ROI
+│   ├── lib/
+│   │   ├── scoring.ts     # Формула силы состава, ролевые веса, Carry/Weak
+│   │   ├── stages.ts      # Логистическая регрессия шансов этапов (WeakMap кеш)
+│   │   ├── coverage.ts    # Эвристика баланса статов состава
+│   │   ├── ocr.ts         # Динамический клиентский Tesseract воркер
+│   │   ├── fuzzy.ts       # Нечеткий поиск команд и псевдонимы (TSM, RNG, etc.)
+│   │   ├── teams.check.ts # Набор из 803 строгих ассертов валидации логики
+│   │   └── ratings.ts     # Загрузка и парсинг датасета игроков
+│   ├── ui/                # Базовые презентационные компоненты (PlayerPhoto, RosterAvatar)
+│   ├── App.tsx            # Корневой шелл приложения с ленивыми табами
+│   └── main.tsx           # Точка входа React
+├── make-logos-manifest.mjs # Генератор карты логотипов команд
+├── make-player-faces.mjs   # Умная нарезка квадратных портретов игроков через Sharp
+├── make-tesseract-assets.mjs # Подготовка автономных офлайн-ассетов Tesseract
+└── package.json
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## Быстрый старт
+
+### Требования
+- **Node.js**: 20.x или новее
+- **npm**: 10.x или новее
+
+### Установка зависимостей
+```bash
+npm install
+```
+
+### Запуск в режиме разработки
+```bash
+npm run dev
+```
+Приложение откроется по адресу `http://127.0.0.1:5173`.
+
+---
+
+## Команды проекта
+
+| Команда | Описание |
+|---|---|
+| `npm run dev` | Запуск локального сервера разработки с HMR |
+| `npm run build` | Компиляция TypeScript и сборка продакшен-бандла в `dist/` |
+| `npm run build:extension` | Сборка веб-приложения и сборка браузерного расширения в `dist-extension/` |
+| `npm run lint` | Быстрая проверка исходного кода через Oxlint |
+| `npm run check` | Запуск проверки логики, датасета и связности картинок (803 проверки без бандлера) |
+| `npm run preview` | Локальный предпросмотр собранной версии из `dist/` |
+
+---
+
+## Установка расширения в браузер
+
+1. Выполните команду сборки расширения:
+   ```bash
+   npm run build:extension
+   ```
+   В корне проекта появится папка `dist-extension/`.
+
+2. **Google Chrome / Яндекс Браузер / Microsoft Edge / Brave**:
+   - Откройте страницу управления расширениями: `chrome://extensions/`
+   - В правом верхнем углу включите **Режим разработчика** (Developer mode).
+   - Нажмите **Загрузить распакованное расширение** (Load unpacked).
+   - Выберите папку `dist-extension`.
+
+3. **Mozilla Firefox**:
+   - Перейдите на страницу: `about:debugging#/runtime/this-firefox`
+   - Нажмите кнопку **Загрузить временное дополнение...** (Load Temporary Add-on).
+   - Выберите файл `manifest.json` внутри папки `dist-extension`.
+
+4. Откройте [https://loldle.net/worldsMayhem](https://loldle.net/worldsMayhem) — в правом верхнем углу страницы появится интерактивный оверлей помощника.
+
+---
+
