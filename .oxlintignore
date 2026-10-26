@@ -1,0 +1,4 @@
+public/**
+dist/**
+dist-extension/**
+node_modules/**

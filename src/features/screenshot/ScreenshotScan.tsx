@@ -8,6 +8,7 @@ import { recognizeCard } from "../../lib/ocr";
 type Props = {
   players: Player[];
   onApply: (slots: TeamSlot[]) => void;
+  onManual?: () => void;
 };
 
 type CardResult = {
@@ -24,15 +25,19 @@ type MemoryEntry = { text: string; team: string; year: number };
 const MEMORY_KEY = "screenshot-ocr-memory-v1";
 const REGION_KEY = "screenshot-roi-v1";
 
+let memoryCache: MemoryEntry[] | null = null;
+
 function readMemory(): MemoryEntry[] {
+  if (memoryCache !== null) return memoryCache;
   try {
     const parsed: unknown = JSON.parse(
       localStorage.getItem(MEMORY_KEY) ?? "[]",
     );
-    return Array.isArray(parsed) ? (parsed as MemoryEntry[]) : [];
+    memoryCache = Array.isArray(parsed) ? (parsed as MemoryEntry[]) : [];
   } catch {
-    return [];
+    memoryCache = [];
   }
+  return memoryCache;
 }
 
 function recall(raw: string): MemoryEntry | null {
@@ -50,6 +55,7 @@ function remember(raw: string, team: string, year: number | null) {
       .filter((entry) => entry.text !== key)
       .concat({ text: key, team, year })
       .slice(-300);
+    memoryCache = memory;
     localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
   } catch {
   }
@@ -84,7 +90,7 @@ function readRegions(): CardRegion[] | null {
   }
 }
 
-export function ScreenshotScan({ players, onApply }: Props) {
+export function ScreenshotScan({ players, onApply, onManual }: Props) {
   const [frame, setFrame] = useState<HTMLImageElement | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -216,11 +222,12 @@ export function ScreenshotScan({ players, onApply }: Props) {
   };
 
   useEffect(() => {
+    if (dragging) return;
     try {
       localStorage.setItem(REGION_KEY, JSON.stringify(regions));
     } catch {
     }
-  }, [regions]);
+  }, [regions, dragging]);
 
   useEffect(() => {
     const canvas = previewRef.current;
@@ -393,6 +400,18 @@ export function ScreenshotScan({ players, onApply }: Props) {
             Выбрать файл…
           </button>
         </div>
+        {onManual && (
+          <div className="shot-manual-wrap">
+            <span className="muted">— или —</span>
+            <button
+              type="button"
+              className="shot-manual-btn"
+              onClick={onManual}
+            >
+              Ввести команды вручную
+            </button>
+          </div>
+        )}
         <input
           ref={inputRef}
           type="file"
@@ -551,17 +570,28 @@ export function ScreenshotScan({ players, onApply }: Props) {
           </p>
         )}
       </div>
-      {cards && (
-        <button
-          type="button"
-          className="shot-apply"
-          disabled={!ready}
-          onClick={applyCards}
-        >
-          Применить {ready ? cards.filter((card) => card.team).length : 0}/
-          {regions.length}
-        </button>
-      )}
+      <div className="shot-bottom-actions">
+        {onManual && (
+          <button
+            type="button"
+            className="shot-manual-btn"
+            onClick={onManual}
+          >
+            Ввести вручную
+          </button>
+        )}
+        {cards && (
+          <button
+            type="button"
+            className="shot-apply"
+            disabled={!ready}
+            onClick={applyCards}
+          >
+            Применить {ready ? cards.filter((card) => card.team).length : 0}/
+            {regions.length}
+          </button>
+        )}
+      </div>
     </section>
   );
 }

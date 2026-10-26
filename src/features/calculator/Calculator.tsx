@@ -200,8 +200,11 @@ export function Calculator({
             ЗАВЕРШИТЬ
           </button>
         )}
-        <button type="button" onClick={() => setConfirmingRestart(true)}>
-          РЕСТАРТ
+        <button
+          type="button"
+          onClick={() => (runOver ? restartGame() : setConfirmingRestart(true))}
+        >
+          {runOver ? "PLAY AGAIN" : "РЕСТАРТ"}
         </button>
       </div>
     );
@@ -225,6 +228,7 @@ export function Calculator({
             onTogglePicked={pickCurrentPlayer}
             onCandidates={setRoundCandidates}
             prefill={prefill}
+            onScanScreenshot={() => setRoundOpen(false)}
           />
           <BestDecision
             advice={advice}
@@ -241,6 +245,10 @@ export function Calculator({
           players={players}
           onApply={(slots) => {
             setPrefill(slots);
+            setRoundOpen(true);
+          }}
+          onManual={() => {
+            setPrefill(null);
             setRoundOpen(true);
           }}
         />

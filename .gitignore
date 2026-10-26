@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-extension
 *.local
 
 .codegraph
@@ -18,6 +19,8 @@ dist-ssr
 # uncompressed tessdata model (app serves public/tessdata/*.gz)
 /eng.traineddata
 /assets-backup
+/test.md
+*.zip
 
 # Editor directories and files
 .vscode/*

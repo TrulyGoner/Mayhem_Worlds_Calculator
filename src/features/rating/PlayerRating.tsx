@@ -23,17 +23,18 @@ export function PlayerRating({
   const [search, setSearch] = useState("");
   const [ratingPage, setRatingPage] = useState(1);
 
+  const query = normalize(search);
   const filteredPlayers = useMemo(
     () =>
       players
         .filter((player) => roleFilter === "ALL" || player.role === roleFilter)
         .filter((player) =>
           normalize(`${player.name} ${player.team}`).includes(
-            normalize(search),
+            query,
           ),
         )
         .sort((a, b) => b.score - a.score),
-    [players, roleFilter, search],
+    [players, roleFilter, query],
   );
   const ratingPageCount = Math.max(
     1,

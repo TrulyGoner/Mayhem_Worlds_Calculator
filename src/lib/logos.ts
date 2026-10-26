@@ -91,12 +91,18 @@ const TEAM_LOGOS: Record<string, string> = {
 // null means "no logo": the caller shows initials instead of a broken image.
 export function teamLogo(team: string): string | null {
   const file = TEAM_LOGOS[team];
-  return file ? `/teams/logos/${encodeURIComponent(file)}` : null;
+  const env = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const base = env?.BASE_URL ?? "/";
+  const prefix = base.endsWith("/") ? base : `${base}/`;
+  return file ? `${prefix}teams/logos/${encodeURIComponent(file)}` : null;
 }
 
 // Player cutouts in public/players are named after the dataset spelling, so
 // unlike team logos this needs no manifest.
 export function playerPhoto(player: string): string {
-  return `/players/${encodeURIComponent(player)}.webp`;
+  const env = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const base = env?.BASE_URL ?? "/";
+  const prefix = base.endsWith("/") ? base : `${base}/`;
+  return `${prefix}players/${encodeURIComponent(player)}.webp`;
 }
 

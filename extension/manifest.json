@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Cacl Worlds Mayhem Helper",
+  "version": "0.1.0",
+  "description": "Показывает лучший пик в Worlds Mayhem поверх LoLdle.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "cacl-worlds-mayhem@example.local",
+      "strict_min_version": "109.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://loldle.net/worldsMayhem*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["worlds_mayhem_ratings.json", "content.css", "roles/*"],
+      "matches": ["https://loldle.net/*"]
+    }
+  ]
+}

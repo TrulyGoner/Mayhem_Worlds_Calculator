@@ -104,6 +104,44 @@ const EMPTY_CHANCES: StageChance[] = STAGES.map((stage) => ({
   margin: 0,
 }));
 
+type StageModel = {
+  id: (typeof STAGES)[number]["id"];
+  label: string;
+  unlocks: string;
+  b0: number;
+  b1: number;
+  cutoff: number;
+};
+
+const modelCache = new WeakMap<Player[], StageModel[]>();
+
+function getModels(players: Player[]): StageModel[] {
+  const cached = modelCache.get(players);
+  if (cached) return cached;
+
+  const lineups = historicalLineups(players);
+  if (lineups.length === 0) return [];
+
+  const powers = lineups.map((lineup) => lineup.power);
+  const models = STAGES.map((stage) => {
+    const needed = PLACEMENT_RANK[stage.id];
+    const cleared = lineups.map((lineup) => (lineup.rank >= needed ? 1 : 0));
+    const { b0, b1 } = fitLogistic(powers, cleared);
+    const cutoff = -b0 / b1;
+    return {
+      id: stage.id,
+      label: stage.label,
+      unlocks: stage.unlocks,
+      b0,
+      b1,
+      cutoff,
+    };
+  }).sort((left, right) => right.cutoff - left.cutoff);
+
+  modelCache.set(players, models);
+  return models;
+}
+
 // Chance of clearing each stage, tightest first. `players` is the full ratings
 // list; it is only read to rebuild the 205 historical lineups the fit needs, so
 // the caller must pass every row, not a role-filtered subset.
@@ -116,25 +154,20 @@ export function stageChances(
   power: number,
 ): StageChance[] {
   if (!Number.isFinite(power) || power <= 0) return EMPTY_CHANCES;
-  const lineups = historicalLineups(players);
-  if (lineups.length === 0) return EMPTY_CHANCES;
+  const models = getModels(players);
+  if (models.length === 0) return EMPTY_CHANCES;
 
-  const powers = lineups.map((lineup) => lineup.power);
-  return STAGES.map((stage) => {
-    const needed = PLACEMENT_RANK[stage.id];
-    const cleared = lineups.map((lineup) => (lineup.rank >= needed ? 1 : 0));
-    const { b0, b1 } = fitLogistic(powers, cleared);
-    const chance = 1 / (1 + Math.exp(-(b0 + b1 * power)));
-    const cutoff = -b0 / b1;
+  return models.map((model) => {
+    const chance = 1 / (1 + Math.exp(-(model.b0 + model.b1 * power)));
     return {
-      id: stage.id,
-      label: stage.label,
-      unlocks: stage.unlocks,
+      id: model.id,
+      label: model.label,
+      unlocks: model.unlocks,
       chance,
-      cutoff,
-      margin: power - cutoff,
+      cutoff: model.cutoff,
+      margin: power - model.cutoff,
     };
-  }).sort((left, right) => right.cutoff - left.cutoff);
+  });
 }
 
 // The hardest stage this lineup still has a real shot at. Chances saturate, so

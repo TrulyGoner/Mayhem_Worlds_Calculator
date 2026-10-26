@@ -1,10 +1,19 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import "./App.css";
 import { Calculator } from "./features/calculator/Calculator";
-import { PlayerRating } from "./features/rating/PlayerRating";
-import { CombosTab } from "./features/combos/CombosTab";
 import { loadPlayers } from "./lib/ratings";
 import type { Player } from "./lib/game";
+
+const PlayerRating = lazy(() =>
+  import("./features/rating/PlayerRating").then((module) => ({
+    default: module.PlayerRating,
+  })),
+);
+const CombosTab = lazy(() =>
+  import("./features/combos/CombosTab").then((module) => ({
+    default: module.CombosTab,
+  })),
+);
 
 type Tab = "calculator" | "players" | "combos";
 
@@ -97,14 +106,16 @@ function App() {
         />
       )}
 
-      {tab === "players" && (
-        <PlayerRating
-          players={players}
-          onTogglePicked={togglePicked}
-        />
-      )}
+      <Suspense fallback={<div className="app-state">Загрузка...</div>}>
+        {tab === "players" && (
+          <PlayerRating
+            players={players}
+            onTogglePicked={togglePicked}
+          />
+        )}
 
-      {tab === "combos" && <CombosTab players={players} />}
+        {tab === "combos" && <CombosTab players={players} />}
+      </Suspense>
     </main>
   );
 }

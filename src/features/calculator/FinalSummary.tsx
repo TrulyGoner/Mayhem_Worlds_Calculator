@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   calculateTeamScore,
   getScoreTone,
@@ -99,55 +99,102 @@ export function FinalSummary({
   allPlayers: Player[];
   board: LeaderRow[];
 }) {
-  const score = calculateTeamScore(picked);
-  const tier = tierFor(score);
-  const totalGames = picked.reduce((sum, player) => sum + (player.games ?? 0), 0);
-  const winRate = mean(
-    picked
-      .map((player) => player.winRate)
-      .filter((value): value is number => value !== undefined),
+  const score = useMemo(() => calculateTeamScore(picked), [picked]);
+  const opponent = useMemo(() => {
+    const pickedIds = new Set(picked.map((player) => player.id));
+    return ROLE_ORDER.map((role) =>
+      allPlayers
+        .filter((player) => player.role === role && !pickedIds.has(player.id))
+        .sort((left, right) => right.score - left.score)[0],
+    ).filter((player): player is Player => player !== undefined);
+  }, [picked, allPlayers]);
+  const opponentScore = useMemo(
+    () => calculateTeamScore(opponent),
+    [opponent],
   );
-  const kda = mean(
-    picked
-      .map((player) => player.kda)
-      .filter((value): value is number => value !== undefined),
+  const tier = useMemo(() => tierFor(score), [score]);
+  const totalGames = useMemo(
+    () => picked.reduce((sum, player) => sum + (player.games ?? 0), 0),
+    [picked],
   );
-  const reliability = mean(
-    picked
-      .map((player) => player.confidence)
-      .filter((value): value is number => value !== undefined),
+  const winRate = useMemo(
+    () =>
+      mean(
+        picked
+          .map((player) => player.winRate)
+          .filter((value): value is number => value !== undefined),
+      ),
+    [picked],
   );
-  const titles = picked.filter((player) => player.placement === "WINNER").length;
-  const finalists = picked.filter(
-    (player) => player.placement === "FINALIST",
-  ).length;
-  const mvp = picked.reduce(
-    (best, player) => (player.score > best.score ? player : best),
-    picked[0],
+  const kda = useMemo(
+    () =>
+      mean(
+        picked
+          .map((player) => player.kda)
+          .filter((value): value is number => value !== undefined),
+      ),
+    [picked],
+  );
+  const reliability = useMemo(
+    () =>
+      mean(
+        picked
+          .map((player) => player.confidence)
+          .filter((value): value is number => value !== undefined),
+      ),
+    [picked],
+  );
+  const titles = useMemo(
+    () => picked.filter((player) => player.placement === "WINNER").length,
+    [picked],
+  );
+  const finalists = useMemo(
+    () => picked.filter((player) => player.placement === "FINALIST").length,
+    [picked],
+  );
+  const mvp = useMemo(
+    () =>
+      picked.reduce(
+        (best, player) => (player.score > best.score ? player : best),
+        picked[0],
+      ),
+    [picked],
   );
 
   // Fitted on the 205 real lineups in the ratings file, so the cutoffs follow the
   // data rather than loldle's 81/84/92/97, which sit above our whole power range.
-  const breakdown = scoreBreakdown(picked);
-  const chances = stageChances(allPlayers, breakdown.power);
-  const ceiling = stageCeiling(chances);
+  const breakdown = useMemo(() => scoreBreakdown(picked), [picked]);
+  const chances = useMemo(
+    () => stageChances(allPlayers, breakdown.power),
+    [allPlayers, breakdown.power],
+  );
+  const ceiling = useMemo(() => stageCeiling(chances), [chances]);
 
   // Kept strictly apart from the score above: an axis gap is a description of
   // the roster's shape, not a number that competes with power.
-  const coverage = coverageAxes(picked, allPlayers);
-  const coverageGap = weakestAxis(coverage);
+  const coverage = useMemo(
+    () => coverageAxes(picked, allPlayers),
+    [picked, allPlayers],
+  );
+  const coverageGap = useMemo(() => weakestAxis(coverage), [coverage]);
 
-  const styleBadges = STYLE_STATS.flatMap((style) => {
-    const teamAvg = mean(statValues(picked, style.stat, style.roles));
-    const datasetMedian = median(statValues(allPlayers, style.stat, style.roles));
-    if (teamAvg === null || datasetMedian === null) return [];
-    return [{ key: style.key, label: style.label, up: teamAvg >= datasetMedian }];
-  });
+  const styleBadges = useMemo(() => {
+    return STYLE_STATS.flatMap((style) => {
+      const teamAvg = mean(statValues(picked, style.stat, style.roles));
+      const datasetMedian = median(
+        statValues(allPlayers, style.stat, style.roles),
+      );
+      if (teamAvg === null || datasetMedian === null) return [];
+      return [
+        { key: style.key, label: style.label, up: teamAvg >= datasetMedian },
+      ];
+    });
+  }, [picked, allPlayers]);
 
   // Informational only: the score formula is untouched, these tags just surface
   // why a pick is strong (shared team / shared Worlds year).
-  const synergyTags: { key: string; label: string }[] = [];
-  {
+  const synergyTags = useMemo(() => {
+    const tags: { key: string; label: string }[] = [];
     const byTeam = new Map<string, number>();
     const byYear = new Map<number, number>();
     for (const player of picked) {
@@ -156,16 +203,20 @@ export function FinalSummary({
     }
     for (const [team, count] of byTeam) {
       if (count >= 2)
-        synergyTags.push({ key: `t-${team}`, label: `Синергия · ${count} × ${team}` });
+        tags.push({
+          key: `t-${team}`,
+          label: `Синергия · ${count} × ${team}`,
+        });
     }
     for (const [year, count] of byYear) {
       if (count >= 2)
-        synergyTags.push({
+        tags.push({
           key: `y-${year}`,
           label: `Класс ${year} · ${count} ${count >= 5 ? "игроков" : "игрока"}`,
         });
     }
-  }
+    return tags;
+  }, [picked]);
 
   return (
     <section className="panel final-panel">
@@ -188,6 +239,39 @@ export function FinalSummary({
             <b className={getScoreTone(score)}>{score.toFixed(1)}</b>
           </div>
           <div className="tier-letter">{tier}</div>
+        </div>
+      </div>
+
+      <div className="match-scoreboard" aria-label="Счёт симуляции матча">
+        <div className="match-team match-team-blue">
+          <span>ВАША КОМАНДА</span>
+          <strong>{score.toFixed(1)}</strong>
+        </div>
+        <div className="match-score-divider">VS</div>
+        <div className="match-team match-team-red">
+          <span>ОППОНЕНТЫ</span>
+          <strong>{opponentScore.toFixed(1)}</strong>
+        </div>
+      </div>
+
+      <div className="match-rosters">
+        <div className="match-roster match-roster-blue">
+          <div className="section-label">ВАША ПЯТЁРКА · BLUE</div>
+          <div className="match-roster-list">
+            {ROLE_ORDER.map((role) => {
+              const player = picked.find((item) => item.role === role);
+              return player ? <span key={player.id}>{player.name}</span> : null;
+            })}
+          </div>
+        </div>
+        <div className="match-roster match-roster-red">
+          <div className="section-label">ПЯТЁРКА ОППОНЕНТОВ · RED</div>
+          <div className="match-roster-list">
+            {ROLE_ORDER.map((role) => {
+              const player = opponent.find((item) => item.role === role);
+              return player ? <span key={player.id}>{player.name}</span> : null;
+            })}
+          </div>
         </div>
       </div>
 

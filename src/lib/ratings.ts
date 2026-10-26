@@ -112,7 +112,10 @@ function parsePayload(value: unknown): RawRatingsPayload {
 }
 
 export async function loadPlayers(): Promise<Player[]> {
-  const response = await fetch("/data/worlds_mayhem_ratings.json");
+  const env = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const base = env?.BASE_URL ?? "/";
+  const prefix = base.endsWith("/") ? base : `${base}/`;
+  const response = await fetch(`${prefix}data/worlds_mayhem_ratings.json`);
 
   if (!response.ok) {
     throw new Error(`Не удалось загрузить рейтинг: ${response.status}`);

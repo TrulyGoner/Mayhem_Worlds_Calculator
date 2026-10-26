@@ -10,7 +10,6 @@ const teams = [
   ...new Set(ratings.player_competition_scores.map((row) => row.team)),
 ].sort();
 
-// Only unambiguous renames: same org, different spelling. Nothing speculative.
 const ALIASES = {
   "Gen.G": "GenG",
   "ahq eSports Club": "ahq e-Sports Club",
@@ -18,8 +17,6 @@ const ALIASES = {
   "Unicorns of Love.CIS": "Unicorns of Love",
   "Fenerbahçe Esports": "1907 Fenerbahe Esports",
   TSM: "Team SoloMid",
-  // Same org, renamed over the years. The file was never re-downloaded, so the
-  // dataset name and the file name only agree through this table.
   "Dplus Kia": "KOO Tigers",
   Griffin: "KOO Tigers",
   "Kiwoom DRX": "DRX",
@@ -57,13 +54,23 @@ ${body}
 // null means "no logo": the caller shows initials instead of a broken image.
 export function teamLogo(team: string): string | null {
   const file = TEAM_LOGOS[team];
-  return file ? \`/teams/logos/\${encodeURIComponent(file)}\` : null;
+  const env = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const base = env?.BASE_URL ?? "/";
+  const prefix = base.endsWith("/") ? base : \`\${base}/\`;
+  return file ? \`\${prefix}teams/logos/\${encodeURIComponent(file)}\` : null;
+}
+
+// Player cutouts in public/players are named after the dataset spelling, so
+// unlike team logos this needs no manifest.
+export function playerPhoto(player: string): string {
+  const env = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const base = env?.BASE_URL ?? "/";
+  const prefix = base.endsWith("/") ? base : \`\${base}/\`;
+  return \`\${prefix}players/\${encodeURIComponent(player)}.webp\`;
 }
 `;
 
 await writeFile("src/lib/logos.ts", source);
-// The app never fetches this, so shipping a second copy under public/ would be a
-// second source of truth that can drift.
 await rm("public/teams/logos.json", { force: true });
 
 console.log(

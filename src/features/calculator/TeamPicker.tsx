@@ -20,6 +20,7 @@ type Props = {
   // of mutating the roster state later.
   prefill: TeamSlot[] | null;
   onSlotsChange?: (slots: Slot[]) => void;
+  onScanScreenshot?: () => void;
 };
 
 type Slot = { team: string; year: number | null };
@@ -99,6 +100,7 @@ export function TeamPicker({
   onCandidates,
   prefill,
   onSlotsChange,
+  onScanScreenshot,
 }: Props) {
   // The screenshot import fills all blocks at once, and it can only reach this
   // component while it is mounting: App renders TeamPicker and ScreenshotScan in
@@ -197,8 +199,21 @@ export function TeamPicker({
 
   return (
     <section className="panel">
-      <div className="section-label">ROUND TEAMS</div>
-      <h2>3 команды раунда</h2>
+      <div className="team-picker-header">
+        <div>
+          <div className="section-label">ROUND TEAMS</div>
+          <h2>3 команды раунда</h2>
+        </div>
+        {onScanScreenshot && (
+          <button
+            type="button"
+            className="team-scan-btn"
+            onClick={onScanScreenshot}
+          >
+            СКАН СКРИНШОТА
+          </button>
+        )}
+      </div>
       <p className="muted">
         Найди команду, выбери год — покажется весь состав этого раунда.
       </p>
