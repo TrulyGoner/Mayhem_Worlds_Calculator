@@ -1,12 +1,3 @@
-// Thin wrapper around the globally-loaded Tesseract UMD bundle
-// (public/tesseract/tesseract.min.js, loaded from index.html). The worker and
-// the 4 MB core are fetched lazily on first recognition; the inputs are the
-// pre-cropped card canvases from screenshot.ts.
-//
-// A "standalone" package import under Vite would drag regenerator-runtime and
-// node-fetch through the pipeline, so the runtime is deliberately not bundled.
-
-// Tesseract.js v7 OEM.LSTM_ONLY.
 const OEM_LSTM_ONLY = 1;
 
 type WorkerLike = {

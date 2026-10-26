@@ -3,9 +3,6 @@ import { PlayerPhoto } from "../../ui/PlayerPhoto";
 import { getScoreTone } from "../../lib/scoring";
 import { ROLES, type RoleFilter } from "../../lib/roles";
 import type { Player } from "../../lib/game";
-
-// Rating rows per page. Must stay even: the zebra striping relies on row parity
-// matching the global rank, and pagination restarts parity at 1.
 const RATING_PAGE_SIZE = 100;
 
 function normalize(value: string): string {
@@ -40,8 +37,6 @@ export function PlayerRating({
     1,
     Math.ceil(filteredPlayers.length / RATING_PAGE_SIZE),
   );
-  // Clamp instead of an effect: if a filter change invalidates the page, the
-  // list falls back to the last valid page on its own.
   const ratingPageSafe = Math.min(ratingPage, ratingPageCount);
   const ratingRows = filteredPlayers.slice(
     (ratingPageSafe - 1) * RATING_PAGE_SIZE,

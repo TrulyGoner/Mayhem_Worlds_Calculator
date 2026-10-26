@@ -5,11 +5,6 @@ export type CoverageAxis = {
   label: string;
   value: number;
 };
-
-// Designed heuristic, not a measurement: it reads the four stat groups that
-// actually exist in the ratings file and asks whether a roster covers them or
-// stacks everything into one. It deliberately does not feed `power` — the power
-// formula and the fitted stage probabilities stay untouched by this.
 const AXES: {
   key: string;
   label: string;
@@ -62,10 +57,6 @@ function getBaselines(allPlayers: Player[]): Map<string, AxisBaseline> {
   }
   return cached;
 }
-
-// Min-max against the whole dataset, so an axis reads as "how strong is this
-// roster here relative to every real Worlds roster", not as an invented
-// threshold. A flat axis (everyone equal) collapses to 50 instead of NaN.
 function normalize(min: number, max: number, value: number): number {
   if (max === min) return 50;
   return ((value - min) / (max - min)) * 100;
@@ -97,10 +88,6 @@ export function coverageScore(axes: CoverageAxis[]): number {
   if (axes.length === 0) return 0;
   return axes.reduce((sum, axis) => sum + axis.value, 0) / axes.length;
 }
-
-// The number that is worth telling someone: a roster scoring 80 everywhere is a
-// different plan from one scoring 80 in damage and 10 in vision, and only the
-// gap between axes shows that.
 export function weakestAxis(
   axes: CoverageAxis[],
 ): { label: string; gap: number } | null {

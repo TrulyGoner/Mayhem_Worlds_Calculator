@@ -10,11 +10,9 @@
   --muted: #9aa9b8;
   --line: rgba(120, 90, 40, 0.64);
   --shell-max: 1560px;
-  /* Jura is already the UI face from index.css; reuse it instead of monospace. */
+
   --font-ui: "Jura", "Segoe UI", system-ui, sans-serif;
-  /* Text ladder. Every colour below clears WCAG AA (4.5:1) against the two panel
-     backgrounds the UI actually uses, --panel-deep #050d18 and the combo row
-     #040f1a, so small labels stay legible instead of going to a grey smudge. */
+
   --text-gold-highlight: #f0e6d2;
   --text-gold-primary: #c89b3c;
   --text-body: #b2bfca;
@@ -140,7 +138,7 @@
   border: 1px solid rgba(200, 155, 60, 0.4);
   clip-path: inherit;
 }
-/* Corner ticks, like the big panels' registration marks. */
+
 .header-score::after {
   content: "";
   position: absolute;
@@ -298,8 +296,7 @@
   grid-template-columns: minmax(280px, 0.78fr) minmax(400px, 1.22fr);
   gap: 20px;
 }
-/* Flex columns so the reserved body heights can stretch instead of leaving a
-   dead tail at the bottom of the shorter panels. */
+
 .calculator-grid > .panel {
   display: flex;
   flex-direction: column;
@@ -337,8 +334,7 @@
 .roster-row:nth-child(even) {
   background: rgba(8, 29, 43, 0.42);
 }
-/* Role glyph sits in a dark socket. The icons are already gold
-   (avg #c9ab6f), so a gold plate behind them would wash them out. */
+
 .roster-row .role-icon {
   align-self: center;
   justify-self: start;
@@ -362,10 +358,7 @@
   height: 30px;
   object-fit: contain;
 }
-/* Face photo next to the glyph. The file is already a 128x128 square cropped
-   around the head by make-player-faces.mjs, so cover just trims the edges and
-   the face lands near 33px instead of the ~23px a whole cutout would give.
-   Same clip-path as the glyph socket so both read as one family. */
+
 .roster-face {
   align-self: center;
   justify-self: start;
@@ -400,7 +393,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Empty slot: same footprint as a filled one, dimmed so it reads as a socket. */
+
 .roster-row.empty b {
   color: var(--text-muted);
   border-color: rgba(120, 90, 40, 0.34);
@@ -411,8 +404,7 @@
 .roster-row.empty .role-icon {
   opacity: 0.45;
 }
-/* The photo column stays reserved so filled and empty rows share one grid, but
-   an empty slot must not read as a second gold frame. */
+
 .roster-row.empty .roster-face {
   background: none;
   border-color: transparent;
@@ -433,8 +425,7 @@
 .best-solution-panel .current-options {
   margin-top: 16px;
 }
-/* Reserved body of the decision panel: verdict + 4 rows of cards. Stretches to
-   fill the stretched panel, so the placeholder grows with it. */
+
 .decision-body {
   flex: 1;
   display: flex;
@@ -620,8 +611,7 @@
 .table-row:hover {
   background: rgba(0, 90, 130, 0.36);
 }
-/* Rows are paginated, so the stripe has to follow the global rank, not the
-   row's position on its page. */
+
 .table-row.top {
   border-left: 3px solid #c89b3c;
 }
@@ -629,15 +619,14 @@
   color: #f0e6d2;
   font-size: 13px;
 }
-/* Player name cell: bust on the left, name beside it. The photo box is a fixed
-   size so a missing file leaves the name in the same place as every other row. */
+
 .player-cell {
   display: flex;
   align-items: center;
   gap: 9px;
   min-width: 0;
 }
-/* Line the header up with the name, not with the photo slot. */
+
 .player-head {
   padding-left: 41px;
 }
@@ -694,23 +683,20 @@
   max-width: var(--shell-max);
   margin: 24px auto 0;
 }
-/* Two tiles per row at the shell width: a narrower cap makes the tile
-   narrower than the widest real trio needs, and those rows wrap. */
+
 .combo-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 11px;
 }
-/* Below the shell width the two columns get too narrow for a trio, so drop to
-   one. Same breakpoint the rest of the layout uses. */
+
 @media (max-width: 1000px) {
   .combo-list {
     grid-template-columns: minmax(0, 1fr);
   }
 }
-/* One combo per row, players chipped so the eye has something to land on
-   between names. */
+
 .synergy-row {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr) auto;
@@ -731,7 +717,7 @@
   border-color: var(--gold);
   transform: translateX(3px);
 }
-/* The top three are the ones worth looking at, so they carry the gold edge. */
+
 .synergy-row.gold-tier {
   border-left-color: var(--gold);
   background: linear-gradient(
@@ -757,7 +743,7 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-/* A visible gold edge separates the chip plate from the row behind it. */
+
 .synergy-member-chip {
   display: inline-flex;
   align-items: center;
@@ -786,7 +772,7 @@
   color: var(--text-gold-primary);
   font-size: 13px;
 }
-/* Bonuses and penalties get their own colour so the signs read at a glance. */
+
 .synergy-formula-breakdown {
   display: flex;
   gap: 10px;
@@ -818,7 +804,7 @@
 .combo-intro {
   margin-bottom: 26px;
 }
-/* Fixed 5-column role layout: substitutes stack inside their own role column. */
+
 .match-list {
   position: relative;
   z-index: 1;
@@ -843,8 +829,7 @@
   -webkit-font-smoothing: antialiased;
 }
 .match-chip {
-  /* Score sits under the name: a 5-column split is too narrow for both on one
-     line, and the name is what identifies the player. */
+
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -915,7 +900,6 @@
   }
 }
 
-/* Calculator layout: roster, screenshot upload and best decision share the first row. */
 .calculator-grid {
   grid-template-columns: minmax(280px, 0.5fr) minmax(270px, 1fr) minmax(
       330px,
@@ -952,7 +936,6 @@
   }
 }
 
-/* Decision cards: one stable grid, readable content and clear action states. */
 .best-solution-panel h2 {
   font-family: "Rajdhani", "Bahnschrift", sans-serif;
   font-weight: 700;
@@ -1041,7 +1024,6 @@
   overflow-wrap: anywhere;
 }
 
-/* Game controls: centered row at the very bottom, under the three blocks. */
 .game-actions {
   grid-column: 1 / -1;
   max-width: var(--shell-max);
@@ -1060,7 +1042,7 @@
   font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.14em;
-  /* Same chamfered silhouette as .header-score, so the footer matches. */
+
   clip-path: polygon(
     9px 0,
     100% 0,
@@ -1077,8 +1059,7 @@
     0 0 13px rgba(200, 155, 60, 0.35),
     inset 0 0 12px rgba(240, 230, 210, 0.12);
 }
-/* Disabled reads as a dim socket, not a washed-out gold plate: opacity over a
-   gold gradient turned РЕРОЛЛ into a muddy grey rectangle. */
+
 .game-actions button:disabled {
   color: #5c7a80;
   background: #0a1a26;
@@ -1086,7 +1067,6 @@
   cursor: not-allowed;
 }
 
-/* Restart confirmation modal. */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1196,9 +1176,7 @@
   align-items: center;
   min-width: 0;
 }
-/* The image fills the square slot and contain centres it inside, so a 4:1
-   wordmark and a square crest occupy the same box instead of one of them
-   breaking the row. A square box without contain stretched wide marks flat. */
+
 .team-logo img {
   width: 100%;
   height: 100%;
@@ -1243,9 +1221,7 @@
   z-index: 5;
   margin: 3px 0 0;
   padding: 0;
-  /* Four rows only: 32px logo + 8px padding above and below = 48px each,
-     192px, plus the list's own 1px borders, which border-box folds in.
-     192px would clip the fourth row and force a scrollbar at 4 items. */
+
   max-height: 194px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1256,8 +1232,7 @@
   scrollbar-width: thin;
   scrollbar-color: #386579 #04121d;
 }
-/* Opaque on the item itself too: a transparent button over any partially
-   painted ancestor turns the list into unreadable mush. */
+
 .team-options button {
   display: flex;
   gap: 8px;
@@ -1307,9 +1282,7 @@
   font-size: 11px;
   text-align: center;
 }
-/* A team with a substitute shows two chips in one role column. Cap the list at
-   two chip rows so a 6-player roster does not grow the whole page into a
-   scroll; 7+ (rare) scroll inside the block instead. */
+
 .team-block .match-list {
   margin: 9px 0 2px;
   max-height: 108px;
@@ -1317,14 +1290,13 @@
   scrollbar-width: thin;
   scrollbar-color: #386579 #04121d;
 }
-/* Compact chips once a team is picked: fits 4 per row instead of 3, so a
-   full roster takes 3 lines instead of 4. */
+
 .team-block .match-chip {
   padding: 5px 5px;
   font-size: 11px;
 }
 @media (max-width: 1000px) {
-  /* Three narrow columns instead of five: names stop being truncated to 2 chars. */
+
   .match-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1335,9 +1307,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-/* Screenshot import (ScreenshotScan) — sits in the calculator's right columns
-   beside the roster in the scan phase, so it never leaves a dead gap next to
-   the roster. Preview left, three review rows right once a shot is loaded. */
+
 .calculator-grid .screenshot-panel {
   grid-column: 2 / -1;
 }
@@ -1425,7 +1395,7 @@
     inset 0 0 25px rgba(10, 200, 185, 0.2),
     0 0 16px rgba(10, 200, 185, 0.2);
 }
-/* Gold corner brackets, Hextech style. */
+
 .shot-empty::before,
 .shot-empty::after {
   content: "";
@@ -1492,7 +1462,7 @@
   margin: 0 3px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
 }
-/* The empty box needs its own rule, or the UA default white leaks through. */
+
 .shot-browse,
 .shot-apply {
   background: linear-gradient(180deg, #1e2832 0%, #0d1622 100%);
@@ -1675,7 +1645,7 @@
     grid-template-columns: 1fr;
   }
 }
-/* FINAL RESULT: hero with tier badge, stat boxes, synergy tags, award rows. */
+
 .final-panel {
   grid-column: 1 / -1;
   display: flex;
@@ -1890,7 +1860,7 @@
 .tag-badge.synergy {
   color: var(--text-accent-cyan);
 }
-/* Loading-screen roster: 5 vertical champion cards. */
+
 .lol-roster-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -2126,9 +2096,7 @@
   font-size: 14px;
   text-align: right;
 }
-/* Margin against the cutoff: cyan when there is headroom, red when short. The
-   sign lives on the text itself, so the two states are distinguishable without
-   relying on colour alone. */
+
 .stage-why {
   color: var(--text-accent-cyan);
   font-size: 11px;
@@ -2139,10 +2107,7 @@
 .stage-why.short {
   color: var(--text-accent-red);
 }
-/* The base/carry/weak breakdown explains the number above it, so it stays on
-   screen rather than hiding behind a hover: the score depends on it, and
-   hover-only detail is unreachable by keyboard and touch. Styled as a quiet
-   caption with the two signed numbers coloured so the sign reads instantly. */
+
 .stage-explain {
   margin-top: 12px;
   color: var(--text-muted);
@@ -2171,9 +2136,7 @@
   .stage-pct { grid-area: pct; }
   .stage-why { grid-area: why; }
 }
-/* Section heading above each list: gold, wide-tracked, uppercase, matching the
-   app's other .section-label rhythm but readable at 11px (was inherited #9dc2cc
-   at 10px, which read as body text rather than a heading). */
+
 .combo-section > .section-label {
   color: var(--gold);
   font-family: "Rajdhani", "Bahnschrift", sans-serif;
@@ -2182,9 +2145,7 @@
   letter-spacing: 0.15em;
   margin-bottom: 4px;
 }
-/* Same role as .muted elsewhere in a panel, so it takes the same size and
-   colour. At 12px in a dimmer grey it read as a caption rather than as the
-   explanation of the list below it. */
+
 .combo-note {
   margin: 0 0 12px;
   color: var(--text-body);

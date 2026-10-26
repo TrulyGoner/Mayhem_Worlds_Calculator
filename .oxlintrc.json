@@ -3,6 +3,7 @@
   "plugins": ["react", "typescript", "oxc", "import"],
   "rules": {
     "react/rules-of-hooks": "error",
+    "react/set-state-in-effect": "off",
     "react/only-export-components": ["warn", { "allowConstantExport": true }],
     "import/no-cycle": "error",
     "import/no-duplicates": "error"

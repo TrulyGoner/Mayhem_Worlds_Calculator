@@ -2,9 +2,6 @@ import { signedGain } from "./draft";
 import type { Player } from "../../lib/game";
 
 export type RoundOption = { player: Player; gain: number };
-
-// "none" = every round player sits on an already-filled role, so there is no
-// pick at all; "reroll" = the expected redraw beats the best card on the table.
 export function BestDecision({
   advice,
   options,

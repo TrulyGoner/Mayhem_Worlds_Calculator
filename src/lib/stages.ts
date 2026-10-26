@@ -2,9 +2,6 @@ import { scoreBreakdown } from "./scoring.ts";
 import type { Placement, Player, Role } from "./game";
 
 const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
-
-// A stage is cleared when a lineup lands at or above this placement. Ordered
-// easiest first so the UI can list the toughest one at the top.
 const STAGES = [
   { id: "QUARTERFINALIST", label: "ЧЕТВЕРТЬФИНАЛ", unlocks: "выход в четвертьфинал" },
   { id: "SEMIFINALIST", label: "ПОЛУФИНАЛ", unlocks: "выход в полуфинал" },
@@ -25,13 +22,9 @@ export type StageChance = {
   label: string;
   unlocks: string;
   chance: number;
-  // power at which this stage becomes a coin flip, from the fit below.
   cutoff: number;
   margin: number;
 };
-
-// One real historical lineup, keyed by team and year. The dataset holds one
-// competition per year, so team+year is the same 205 lineups the fit uses.
 function historicalLineups(players: Player[]): { power: number; rank: number }[] {
   const groups = new Map<string, Player[]>();
   for (const player of players) {
@@ -58,9 +51,6 @@ function historicalLineups(players: Player[]): { power: number; rank: number }[]
   }
   return lineups;
 }
-
-// Two-parameter logistic fit by Newton's method: P(cleared) = sigmoid(b0 + b1·power).
-// Fitted here rather than baked in so the numbers follow the ratings file.
 function fitLogistic(
   powers: number[],
   cleared: number[],
@@ -141,14 +131,6 @@ function getModels(players: Player[]): StageModel[] {
   modelCache.set(players, models);
   return models;
 }
-
-// Chance of clearing each stage, tightest first. `players` is the full ratings
-// list; it is only read to rebuild the 205 historical lineups the fit needs, so
-// the caller must pass every row, not a role-filtered subset.
-//
-// The cutoffs are fitted, not loldle's 81/84/92/97: our power scale runs lower,
-// with the best real lineup at 95.1, so loldle's 97 would put every lineup at
-// zero percent champion.
 export function stageChances(
   players: Player[],
   power: number,
@@ -169,10 +151,6 @@ export function stageChances(
     };
   });
 }
-
-// The hardest stage this lineup still has a real shot at. Chances saturate, so
-// the easiest stage always carries the highest number: the ceiling has to walk
-// the list from the top, not take the biggest percentage.
 export function stageCeiling(chances: StageChance[]): StageChance | undefined {
   return chances.find((chance) => chance.chance >= 0.5);
 }

@@ -11,15 +11,7 @@ export type Combo = {
 };
 
 const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
-
-// How deep each role pool goes. Five per role gives 250 pairs and 1250 trios,
-// which is far more than the list ever shows, so the top is a real ranking
-// rather than everything that happened to fit.
 const DEPTH = 5;
-
-// Index combinations of `size` drawn from [0, count). Used to walk role groups,
-// so a combo always has one player per distinct role and permutations cannot be
-// generated in the first place.
 function indexGroups(count: number, size: number): number[][] {
   const groups: number[][] = [];
   const walk = (start: number, current: number[]) => {
@@ -55,9 +47,6 @@ function rank(players: Player[]): Combo {
     weakRole: breakdown.weakRole,
   };
 }
-
-// Power comes from the same scoreBreakdown the roster score uses, so a combo
-// and a lineup are comparable numbers.
 export function buildCombos(players: Player[]): {
   pairs: Combo[];
   trios: Combo[];

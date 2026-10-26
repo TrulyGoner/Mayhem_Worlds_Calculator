@@ -4,8 +4,6 @@ import { normalize } from "./fuzzy.ts";
 export const ROLE_ORDER: Role[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 export type TeamSlot = { team: string; year: number | null };
-
-// Years this team actually appears in, newest first.
 export function yearsFor(team: string, players: Player[]): number[] {
   return [
     ...new Set(
@@ -15,10 +13,6 @@ export function yearsFor(team: string, players: Player[]): number[] {
     ),
   ].sort((left, right) => right - left);
 }
-
-// Years of `team` that no other block has claimed. The round-level duplicate ban
-// is on (team, year), not on team: the same team may sit in two blocks at once
-// as long as the years differ.
 export function freeYears(
   team: string,
   players: Player[],
@@ -33,10 +27,6 @@ export function freeYears(
   );
   return yearsFor(team, players).filter((year) => !used.has(year));
 }
-
-// Everyone listed for a (team, year), in role order. A role can hold two
-// players: mid-season substitutes share a slot, e.g. Bilibili Gaming 2024
-// JUNGLE holds Xun and Wei. Starter first by score.
 export function rosterFor(
   team: string,
   year: number,
@@ -52,13 +42,6 @@ export function rosterFor(
 }
 
 type YearInference = { year: number | null; candidates: number[] };
-
-// The year badge on a card is often stylized past what Tesseract can read (OCR
-// shows "(5)" for "2015"), while the player names below it read perfectly. So
-// the year falls back to the roster: score every year of `team` by how many of
-// its listed players the OCR text mentions, and trust unique maxima. 2016/2017
-// share a roster, so genuine ties come back year: null with both candidates and
-// the caller asks the user.
 export function inferYearFromRoster(
   text: string,
   team: string,

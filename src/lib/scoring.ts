@@ -7,9 +7,6 @@ const roleWeights: Record<Role, number> = {
   ADC: 0.23,
   SUPPORT: 0.16,
 };
-
-// Ceilings stop one elite pick from carrying a lineup on its own, and stop a
-// single weak pick from sinking it.
 const CARRY_CAP = 2.5;
 const WEAK_CAP = 2;
 
@@ -28,13 +25,6 @@ const EMPTY: TeamScoreBreakdown = {
   weakPenalty: 0,
   weakRole: null,
 };
-
-// Lineup strength = role-weighted average, plus two dispersion terms that look at
-// the spread of the ratings rather than at who they belong to. Carry rewards
-// ratings sitting above the lineup's own mean, the penalty punishes the bottom
-// of it, and weakRole names that bottom. A role holds one player in a lineup but
-// a roster can list a substitute (EDward Gaming 2016 MID = PawN/Scout), so the
-// stronger entry per role wins.
 export function scoreBreakdown(players: Player[]): TeamScoreBreakdown {
   const byRole = new Map<Role, Player>();
   for (const player of players) {
@@ -100,10 +90,6 @@ export function getScoreTone(score: number): "elite" | "strong" | "average" {
   if (score >= 80) return "strong";
   return "average";
 }
-
-// Cap a score-descending list without cutting through a tie group. Cutting at a
-// fixed count would drop every entry that scores exactly what the last visible
-// one scores, which makes the list look arbitrary right at the cutoff.
 export function withTies<T>(
   list: T[],
   limit: number,

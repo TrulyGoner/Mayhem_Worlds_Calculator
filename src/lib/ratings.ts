@@ -36,9 +36,6 @@ function isRole(value: unknown): value is Role {
 function isPlacement(value: unknown): value is Placement {
   return typeof value === "string" && placements.includes(value as Placement);
 }
-
-// raw_stat_values keys differ per role (support has no KDA on some rows), so a
-// missing metric must come back undefined instead of collapsing to 0.
 function rawStat(row: unknown, key: string): number | undefined {
   if (!isRecord(row)) return undefined;
   const value = row[key];
@@ -85,8 +82,6 @@ export function parsePlayer(row: RawPlayerRow, index: number): Player {
     id: `${row.player}-${row.team}-${year}-${row.position}`,
     name: row.player,
     role: row.position,
-    // Score comes straight from the ratings file's adjusted_competition_score:
-    // the champion/finalist bonuses are already folded into it.
     score: toFiniteNumber(row.adjusted_competition_score),
     year,
     team: row.team,

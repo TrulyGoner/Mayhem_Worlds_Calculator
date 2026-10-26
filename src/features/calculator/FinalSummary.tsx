@@ -35,9 +35,6 @@ function tierFor(score: number): string {
 }
 
 type MetricKey = "kp" | "goldDiff15" | "firstBlood" | "clearWards" | "dpm";
-
-// Informational style tags: team average vs the dataset median for the same
-// roles. No invented thresholds — the baseline is the data itself.
 const STYLE_STATS: { key: string; label: string; stat: MetricKey; roles: Role[] }[] = [
   { key: "lane", label: "Линия", stat: "goldDiff15", roles: ["TOP", "MID", "ADC"] },
   { key: "fight", label: "Тимфайты", stat: "kp", roles: ["JUNGLE", "MID", "ADC", "SUPPORT"] },
@@ -160,18 +157,12 @@ export function FinalSummary({
       ),
     [picked],
   );
-
-  // Fitted on the 205 real lineups in the ratings file, so the cutoffs follow the
-  // data rather than loldle's 81/84/92/97, which sit above our whole power range.
   const breakdown = useMemo(() => scoreBreakdown(picked), [picked]);
   const chances = useMemo(
     () => stageChances(allPlayers, breakdown.power),
     [allPlayers, breakdown.power],
   );
   const ceiling = useMemo(() => stageCeiling(chances), [chances]);
-
-  // Kept strictly apart from the score above: an axis gap is a description of
-  // the roster's shape, not a number that competes with power.
   const coverage = useMemo(
     () => coverageAxes(picked, allPlayers),
     [picked, allPlayers],
@@ -190,9 +181,6 @@ export function FinalSummary({
       ];
     });
   }, [picked, allPlayers]);
-
-  // Informational only: the score formula is untouched, these tags just surface
-  // why a pick is strong (shared team / shared Worlds year).
   const synergyTags = useMemo(() => {
     const tags: { key: string; label: string }[] = [];
     const byTeam = new Map<string, number>();

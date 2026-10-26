@@ -104,9 +104,6 @@ export function ScreenshotScan({ players, onApply, onManual }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const originRef = useRef<CardResult[]>([]);
   const dragRef = useRef<DragState | null>(null);
-  // regions changes on every pointermove, and the scan effect depends on it, so
-  // without this flag a drag re-dispatches the whole OCR pass per frame. Scan
-  // once the drag settles instead.
   const [dragging, setDragging] = useState(false);
 
   const teams = useMemo(
@@ -239,9 +236,6 @@ export function ScreenshotScan({ players, onApply, onManual }: Props) {
   useEffect(() => {
     if (!frame || dragging) return;
     let cancelled = false;
-    // Tesseract runs outside React, so this effect is the sync point with an
-    // external system: busy/cards must be reset before the scan is dispatched.
-    // oxlint-disable-next-line react/set-state-in-effect
     setBusy(true);
     setCards(null);
     (async () => {
@@ -505,9 +499,6 @@ export function ScreenshotScan({ players, onApply, onManual }: Props) {
                     <select
                       value={card.team}
                       onChange={(event) => {
-                        // Same rule as the round picker: a single-year team
-                        // resolves its year immediately, anything else waits
-                        // for the manual pick.
                         const years = event.target.value
                           ? yearsFor(event.target.value, players)
                           : [];

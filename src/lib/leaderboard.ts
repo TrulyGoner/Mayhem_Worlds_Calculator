@@ -6,10 +6,6 @@ export type LeaderRow = {
 
 const KEY = "cacl.leaderboard.v1";
 const LIMIT = 10;
-
-// Every browser call can throw here: private mode, disabled storage, quota.
-// A leaderboard is never worth breaking the game over, so failures degrade to
-// an empty board and a silent no-op write.
 export function loadBoard(): LeaderRow[] {
   try {
     const raw = localStorage.getItem(KEY);
@@ -49,7 +45,6 @@ export function recordResult(
   try {
     localStorage.setItem(KEY, JSON.stringify(next));
   } catch {
-    // Storage refused the write; the in-memory board is still correct.
   }
   return next;
 }
@@ -58,6 +53,5 @@ export function clearBoard(): void {
   try {
     localStorage.removeItem(KEY);
   } catch {
-    // Nothing to do.
   }
 }

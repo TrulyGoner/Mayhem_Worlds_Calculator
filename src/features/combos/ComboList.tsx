@@ -1,11 +1,6 @@
 import { Fragment } from "react";
 import { withTies } from "../../lib/scoring";
 import type { Combo } from "../../lib/combos";
-
-// With only two players the carry and weak terms measure the same half-gap with
-// the same 0.2 factor, so they cancel exactly and the score is the role-weighted
-// average on its own. Printing "связка +0.00 / слабое −0.00" across every pair
-// card would advertise a synergy term that is not doing any work there.
 export function ComboList({
   combos,
   title,

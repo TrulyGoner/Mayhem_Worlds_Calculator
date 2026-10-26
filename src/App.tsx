@@ -24,9 +24,6 @@ function App() {
   const [rerollsLeft, setRerollsLeft] = useState(3);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // Same rule everywhere: a player never grows the lineup past 5, they take
-  // over their own role. Lives here because the rating table picks too.
   function togglePicked(player: Player) {
     setPicked((current) => {
       if (current.some((item) => item.id === player.id)) {

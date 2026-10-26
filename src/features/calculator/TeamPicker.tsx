@@ -15,9 +15,6 @@ type Props = {
   pickedPlayers: Player[];
   onTogglePicked: (player: Player) => void;
   onCandidates: (players: Player[]) => void;
-  // Filled slots coming from the screenshot import (ScreenshotScan). The
-  // component owns its slots, so the external fill seeds initial state instead
-  // of mutating the roster state later.
   prefill: TeamSlot[] | null;
   onSlotsChange?: (slots: Slot[]) => void;
   onScanScreenshot?: () => void;
@@ -42,8 +39,6 @@ const EMPTY_SLOTS: Slot[] = Array.from({ length: BLOCKS }, () => ({
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
-
-// "NaJin White Shield" -> NWS, "G2 Esports" -> G2, "NRG" -> NRG.
 function initials(team: string): string {
   const words = team.split(/\s+/).filter(Boolean);
   if (words.length === 1) return words[0].slice(0, 3).toUpperCase();
@@ -52,11 +47,6 @@ function initials(team: string): string {
     .map((word) => word[0].toUpperCase())
     .join("");
 }
-
-// Every team in the dataset has a logo file now, but a missing file must never
-// surface as a broken image, so the initials stay as the fallback in both
-// directions. The slot is a square and the image carries object-fit: contain,
-// so a 4:1 wordmark and a square crest both sit centred in the same box.
 function TeamLogo({
   team,
   width,
@@ -102,11 +92,6 @@ export function TeamPicker({
   onSlotsChange,
   onScanScreenshot,
 }: Props) {
-  // The screenshot import fills all blocks at once, and it can only reach this
-  // component while it is mounting: App renders TeamPicker and ScreenshotScan in
-  // the same ternary, so prefill can never change while this is mounted. The
-  // queries mirror the teams so the inputs read back the chosen team names.
-  // Seeding initial state avoids a mount-time render cascade.
   const [slots, setSlots] = useState<Slot[]>(() =>
     prefill ? prefill.map((slot) => ({ ...slot })) : EMPTY_SLOTS,
   );
@@ -119,9 +104,6 @@ export function TeamPicker({
     () => [...new Set(players.map((player) => player.team))].sort(),
     [players],
   );
-
-  // A role holds one player, so any roster chip for an already-filled role is
-  // unclickable. From the second pick on, the whole column goes empty.
   const occupiedRoles = useMemo(
     () => new Set(pickedPlayers.map((player) => player.role)),
     [pickedPlayers],
@@ -241,8 +223,7 @@ export function TeamPicker({
             </div>
 
             <div className="team-pick-row">
-              {/* The slot is reserved even with no team chosen, so picking one
-                  shifts nothing in a block whose height is already pinned. */}
+
               <TeamLogo team={slot.team} width={45} height={45} />
               <div className="team-search-wrap">
                 <input

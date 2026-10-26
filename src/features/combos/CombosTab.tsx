@@ -2,11 +2,6 @@ import { useMemo } from "react";
 import { ComboList } from "./ComboList";
 import { buildCombos } from "../../lib/combos";
 import type { Player } from "../../lib/game";
-
-// ~1500 ranked rows, so it is built once per ratings load rather than per
-// render, and only while this tab is open. Reads the same player list the
-// calculator draws from, which is what makes a combo's power comparable with a
-// roster's score.
 export function CombosTab({ players }: { players: Player[] }) {
   const combos = useMemo(() => buildCombos(players), [players]);
 

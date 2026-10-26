@@ -62,9 +62,6 @@ export function Calculator({
     () => new Set(picked.map((player) => player.id)),
     [picked],
   );
-  // Consumed as a useMemo dep by currentOptions and rerollEstimate below, so it
-  // has to keep its identity across renders: a fresh array on every render
-  // invalidates both memos and re-runs the reroll Monte Carlo each time.
   const missingRoles = useMemo(
     () =>
       ROLES.filter(
@@ -75,14 +72,8 @@ export function Calculator({
   );
   const currentTeamScore = useMemo(() => calculateTeamScore(picked), [picked]);
   const currentBreakdown = useMemo(() => scoreBreakdown(picked), [picked]);
-  // `closed` is the player's own "finish here", which is how a short roster
-  // reaches the summary at all.
   const rosterFull = picked.length >= 5;
   const runOver = closed || rosterFull;
-
-  // One entry per finished game, not per render: runOver stays true while the
-  // summary is open and while any pick is edited, and gameId is what separates
-  // one run from the next after a restart.
   const recordedGameId = useRef(-1);
   useEffect(() => {
     if (!runOver || picked.length === 0) return;
@@ -90,15 +81,7 @@ export function Calculator({
     recordedGameId.current = gameId;
     setBoard(recordResult(calculateTeamScore(picked), picked.length));
   }, [runOver, picked, gameId]);
-
-  // Screenshot -> round -> screenshot loop. roundOpen is flipped by the
-  // screenshot's "apply" and by the pick/reroll that ends a round. It cannot be
-  // derived from roundCandidates: those come from TeamPicker, which only mounts
-  // in the round phase, so deriving the phase from them deadlocks the first
-  // round.
   const roundPhase = !runOver && roundOpen;
-  // A full roster ends the loop: neither the screenshot step nor the round
-  // panel is shown once the game is over.
   const scanPhase = !roundPhase && !runOver;
   const finalPhase = runOver;
 
@@ -106,9 +89,6 @@ export function Calculator({
     () =>
       roundCandidates
         .filter((player) => !pickedIds.has(player.id))
-        // A role holds one player, so a candidate whose role is already filled
-        // is not a pick at all. Without this the advice names someone the
-        // lineup cannot take, and clicking it silently swaps out a live pick.
         .filter((player) => missingRoles.includes(player.role))
         .map((player) => ({ player, gain: teamScoreGain(picked, player) }))
         .sort((left, right) => right.gain - left.gain),
@@ -121,7 +101,6 @@ export function Calculator({
     if (eligible.length === 0) return 0;
 
     const gains = eligible.map((player) => teamScoreGain(picked, player));
-    // A redraw cannot beat the pool it draws from.
     if (eligible.length <= REROLL_CARDS) return Math.max(...gains);
 
     const random = seededRandom(
@@ -145,15 +124,10 @@ export function Calculator({
   }, [players, picked, pickedIds, missingRoles, currentTeamScore]);
 
   const bestCurrentOption = currentOptions[0];
-  // With every role filled a redraw cannot help either, so the reroll is only
-  // worth offering while a real candidate exists to beat.
   const rerollIsBetter =
     rerollsLeft > 0 &&
     bestCurrentOption !== undefined &&
     rerollEstimate > bestCurrentOption.gain;
-  // Two exclusive states, so the panel never reads a gain off a missing pick.
-  // A full roster is not one of them: the round panel is hidden once the five
-  // roles are filled, so "full" can never render here.
   const advice: "none" | "reroll" | "pick" =
     bestCurrentOption === undefined
       ? "none"
