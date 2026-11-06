@@ -63,10 +63,6 @@ function noteYearSelection(event, state) {
   setPendingTeam(state, team);
 }
 
-function key(player) {
-  return `${player.name}|${player.team}|${player.year}|${player.role}`;
-}
-
 function gain(candidate, state) {
   const { calculateTeamScore } = globalThis.CaclShared || {};
   if (!calculateTeamScore) return 0;

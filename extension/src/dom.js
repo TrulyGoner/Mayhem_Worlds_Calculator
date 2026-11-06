@@ -254,7 +254,3 @@ export function opponentFromPage(state) {
     .sort((left, right) => left.top - right.top);
   return playerRows[0]?.players.slice(0, 5).map((item) => item.player) ?? null;
 }
-
-function key(player) {
-  return `${player.name}|${player.team}|${player.year}|${player.role}`;
-}
