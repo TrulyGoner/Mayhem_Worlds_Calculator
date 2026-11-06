@@ -13,6 +13,8 @@ type RawPlayerRow = {
 };
 
 type RawRatingsPayload = {
+  version?: number;
+  updatedAt?: string;
   player_competition_scores: unknown[];
 };
 
@@ -98,12 +100,24 @@ export function parsePlayer(row: RawPlayerRow, index: number): Player {
   };
 }
 
-function parsePayload(value: unknown): RawRatingsPayload {
+export function parsePayload(value: unknown): RawRatingsPayload {
   if (!isRecord(value) || !Array.isArray(value.player_competition_scores)) {
     throw new Error("JSON рейтингов не содержит player_competition_scores");
   }
 
-  return { player_competition_scores: value.player_competition_scores };
+  const version = typeof value.version === "number" ? value.version : undefined;
+  const updatedAt = typeof value.updatedAt === "string" ? value.updatedAt : undefined;
+
+  return {
+    version,
+    updatedAt,
+    player_competition_scores: value.player_competition_scores,
+  };
+}
+
+export function getRatingsMeta(json: unknown): { version?: number; updatedAt?: string } {
+  const payload = parsePayload(json);
+  return { version: payload.version, updatedAt: payload.updatedAt };
 }
 
 export async function loadPlayers(): Promise<Player[]> {

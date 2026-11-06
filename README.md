@@ -1,145 +1,141 @@
-# Worlds Mayhem Analytics (Cacl)
+# Cacl — Worlds Mayhem Calculator
 
-Аналитический калькулятор драфта, база знаний игроков Worlds и оверлей-ассистент для мини-игры **Worlds Mayhem** на [LoLdle](https://loldle.net/worldsMayhem).
+Инструмент для режима **Worlds Mayhem** в LoLdle. Состоит из двух частей:
 
-Помогает собирать сильнейший состав из 5 ролей, рассчитывать математическое ожидание реролла, оценивать шансы на прохождение стадий турнира (вплоть до чемпиона) и автоматизировать драфт прямо поверх игры через браузерное расширение или OCR со скриншота.
+1. **Веб-приложение** (React + Vite + TypeScript) — калькулятор пиков, рейтинг игроков, поиск комбинаций, OCR-импорт скриншотов.
+2. **Браузерное расширение** (MV3) — оверлей поверх `loldle.net/worldsMayhem*`, показывает лучший пик в реальном времени.
 
----
+## Быстрый старт
 
-## Возможности
+```bash
+cd lol/Cacl
+npm install
+npm run dev           # Vite dev server на http://127.0.0.1:5173
+```
 
-- **Калькулятор драфта в реальном времени**:
-  - Учёт ролевых весов (`TOP`, `JUNGLE`, `MID`, `ADC`, `SUPPORT`).
-  - Бонус за звёздных игроков (Carry Bonus) и штраф за слабейшую позицию (Weak Penalty).
-  - Оценка математического ожидания реролла через метод Монте-Карло с псевдослучайной фиксацией зерна (seed).
-  - Расчёт шансов выхода в четвертьфинал, полуфинал, финал и завоевания чемпионского титула на основе двухпараметрической логистической регрессии по реальным историческим составам Worlds.
-  - Оценка гармоничности состава по 4 осям: *Линия* (Gold diff@15), *Тимфайты* (KP), *Урон* (DPM), *Вижн* (Clear wards).
+## Сборка
 
-- **Распознавание карточек по скриншоту (OCR)**:
-  - Вставка скриншота из буфера обмена (`Ctrl+V`) или перетаскивание файла.
-  - Автономный клиентский OCR на базе движка Tesseract.js (WASM + LSTM) — работает без интернета и не отправляет изображения на сервер.
-  - Интерактивная настройка зон сканирования (ROI) с сохранением координат.
-  - Нечёткое сопоставление названий команд (Levenshtein / sliding window) и автоматическое восстановление года по составу игроков.
-
-- **База данных и рейтинг 500+ игроков Worlds (2013–2024)**:
-  - Таблица с мгновенным поиском по никнейму и тегу команды.
-  - Фильтры по ролям, статистика побед (WinRate), KDA и надежность выборки.
-  - Фото игроков и логотипы клубов.
-
-- **Оптимальные комбинации (Связки)**:
-  - Рейтинг лучших пар и троек игроков с расчетом чистой синергии.
-
-- **Браузерное расширение (Manifest V3)**:
-  - Легковесный оверлей прямо на странице `loldle.net/worldsMayhem`.
-  - Автоматическое определение стадии, раунда и доступных карт.
-  - Рекомендация лучшего выбора в текущем раунде и симуляция матча против оппонента.
-
----
-
-## Стек технологий
-
-- **Фреймворк**: [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
-- **Сборка**: [Vite 8](https://vite.dev/) с разделением кода на асинхронные чанки (`React.lazy`)
-- **Линтер**: [Oxlint](https://oxc.rs/) (анализ AST за десятки миллисекунд)
-- **OCR**: [Tesseract.js 7](https://tesseract.projectnaptha.com/) (локальные SIMD/Relaxed-SIMD WASM-ядра и сжатые модели `.traineddata.gz`)
-- **Обработка графики**: [Sharp](https://sharp.pixelplumbing.com/) (автоматическая нарезка лиц 128×128 и конвертация логотипов в WebP)
-- **Расширение**: Chromium & Firefox Manifest V3 Shadow DOM Overlay
-
----
+```bash
+npm run build              # Веб-приложение → dist/
+npm run build:extension    # Расширение → dist-extension/
+```
 
 ## Структура проекта
 
 ```
-cacl/
-├── extension/             # Исходный код расширения браузера
-│   ├── manifest.json      # Манифест Chrome/Firefox MV3
-│   ├── content.js         # Скрипт оверлея и парсинга страницы игры
-│   └── content.css        # Стили панели расширения
-├── public/
-│   ├── data/              # Оптимизированный датасет игроков (worlds_mayhem_ratings.json)
-│   ├── players/           # Нарезка лиц игроков (WebP, 128x128)
-│   ├── teams/             # Векторные и WebP логотипы команд Worlds
-│   ├── tessdata/          # Языковая модель Tesseract (eng.traineddata.gz)
-│   └── tesseract/         # WASM-ядра и воркеры Tesseract.js
-├── scripts/
-│   └── build-extension.mjs # Сборка легковесного дистрибутива расширения
+lol/Cacl/
 ├── src/
+│   ├── App.tsx                      # Корневой компонент, 3 вкладки
 │   ├── features/
-│   │   ├── calculator/    # Калькулятор пиков, RosterPanel, TeamPicker, FinalSummary
-│   │   ├── combos/        # Вкладка анализа пар и троек (CombosTab, ComboList)
-│   │   ├── rating/        # Таблица рейтинга игроков с пагинацией и поиском
-│   │   └── screenshot/    # Сканер скриншотов с интерактивной сеткой ROI
+│   │   ├── calculator/              # Основной калькулятор (draft, roster, best pick)
+│   │   ├── rating/                  # Таблица рейтингов игроков
+│   │   ├── combos/                  # Поиск оптимальных комбинаций
+│   │   └── screenshot/              # OCR-импорт скриншотов (Tesseract.js)
 │   ├── lib/
-│   │   ├── scoring.ts     # Формула силы состава, ролевые веса, Carry/Weak
-│   │   ├── stages.ts      # Логистическая регрессия шансов этапов (WeakMap кеш)
-│   │   ├── coverage.ts    # Эвристика баланса статов состава
-│   │   ├── ocr.ts         # Динамический клиентский Tesseract воркер
-│   │   ├── fuzzy.ts       # Нечеткий поиск команд и псевдонимы (TSM, RNG, etc.)
-│   │   ├── teams.check.ts # Набор из 803 строгих ассертов валидации логики
-│   │   └── ratings.ts     # Загрузка и парсинг датасета игроков
-│   ├── ui/                # Базовые презентационные компоненты (PlayerPhoto, RosterAvatar)
-│   ├── App.tsx            # Корневой шелл приложения с ленивыми табами
-│   └── main.tsx           # Точка входа React
-├── make-logos-manifest.mjs # Генератор карты логотипов команд
-├── make-player-faces.mjs   # Умная нарезка квадратных портретов игроков через Sharp
-├── make-tesseract-assets.mjs # Подготовка автономных офлайн-ассетов Tesseract
-└── package.json
+│   │   ├── game.ts                  # Типы: Player, Role, TeamOption, DraftState
+│   │   ├── ratings.ts               # Парсинг JSON рейтинга (валидация, загрузка)
+│   │   ├── scoring.ts               # Алгоритм оценки команды
+│   │   ├── teams.ts                 # Логика составов, года, fuzzy-поиск
+│   │   ├── fuzzy.ts                 # Нормализация, Levenshtein, алиасы команд, год
+│   │   ├── ocr.ts                   # Tesseract.js wrapper (Web Worker)
+│   │   ├── ocr-worker-client.ts     # Main-thread client for OCR worker
+│   │   ├── ocr.worker.ts            # Web Worker entry (loads Tesseract)
+│   │   ├── screenshot.ts            # ROI, кроп карточек, отрисовка превью
+│   │   ├── leaderboard.ts           # localStorage-таблица лидеров
+│   │   └── ...
+│   └── shared/                      # Shared logic (used by web app + extension)
+│       ├── game.ts                  # Types (re-exported by lib/)
+│       ├── scoring.ts               # Scoring algorithm
+│       ├── fuzzy.ts                 # Fuzzy matching, aliases, year picking
+│       └── teams.ts                 # Roster queries, year inference
+├── extension/
+│   ├── src/                         # Modular extension source
+│   │   ├── index.js                 # Entry point
+│   │   ├── state.js                 # State + pure mutators
+│   │   ├── dom.js                   # DOM queries, selectors, page scraping
+│   │   ├── render.js                # HTML generation
+│   │   ├── render-utils.js          # escapeHtml, roleIcon
+│   │   ├── events-handlers.js       # Click/change handlers
+│   │   ├── events.js                # Event listener setup
+│   │   └── utils.js                 # extensionUrl helper
+│   ├── manifest.json                # MV3 manifest
+│   └── content.js                   # Bundled (generated by build-extension.mjs)
+├── public/data/
+│   └── worlds_mayhem_ratings.json   # ~280KB, ~2000+ игроков
+├── scripts/
+│   └── build-extension.mjs          # Builds extension + shared.js bundle
+├── dist-extension/                  # Built extension (load unpacked)
+├── docs/adr/                        # Architecture Decision Records
+├── vitest.config.ts                 # Vitest config
+└── src/lib/*.test.ts                # Unit tests (vitest + jsdom)
 ```
 
----
+## Основные алгоритмы
 
-## Быстрый старт
+### Scoring (`src/lib/scoring.ts`)
+Взвешенная сумма по ролям:
+- TOP .17, JUNGLE .20, MID .24, ADC .23, SUPPORT .16
+- **Carry bonus** (топ-3 выше среднего, кап 2.5)
+- **Weak penalty** (боттом-2 ниже среднего, кап 2.0)
 
-### Требования
-- **Node.js**: 20.x или новее
-- **npm**: 10.x или новее
+### Fuzzy matching (`src/lib/fuzzy.ts`)
+- Нормализация: lowercase + alnum
+- Levenshtein distance + partial ratio
+- Алиасы команд: TSM, RNG, G2, DK, FNC, C9 и др.
+- `pickYear` — OCR-коррекция цифр (O→0, I→1, Z→2, S→5, B→8, G→6)
 
-### Установка зависимостей
+### OCR (`src/lib/ocr.ts` + `ocr.worker.ts`)
+- Tesseract.js загружается в **Web Worker** (отдельный чанк `ocr.worker-*.js`)
+- Main thread не блокируется: `recognizeImage(arrayBuffer)` возвращает Promise
+- Прогресс загрузки WASM/языков — через `postMessage`
+- Первый запуск ~2-5 сек (cold start), последующие — быстрее
+
+### Teams (`src/lib/teams.ts`)
+- `inferYearFromRoster` — подбор года по совпадениям имён в составе
+- `freeYears` — исключение уже использованных лет для команды
+
+### Extension (`extension/src/`)
+Модульная архитектура: state → dom → render → events. Сборка конкатенирует модули в `content.js`.
+
+**State machine:** ожидание раунда → выбор команды → пик игрока → турнир (group→QF→SF→F)  
+Авто-синхронизация с DOM через MutationObserver + click/change listeners.
+
+**Устойчивость к изменениям LoLdle:** критичные селекторы имеют fallback-цепочки (массивы в `SELECTORS`). Если основной класс изменится, пробуются альтернативы (`[class*="gc-team"]`, `[class*="team-card"]` и т.д.). Текстовый парсинг используется как последний fallback.
+
+## Команды разработки
+
 ```bash
-npm install
+npm run dev                 # Vite dev server
+npm run build               # Production build (tsc + vite)
+npm run build:extension     # Build extension to dist-extension/
+npm run lint                # oxlint src
+npm run check               # Node-скрипт валидации teams.ts
+npx vitest                  # Unit-тесты
 ```
 
-### Запуск в режиме разработки
+## Установка расширения
+
+1. `npm run build:extension`
+2. Открыть `chrome://extensions` (или `edge://extensions`)
+3. Включить "Developer mode"
+4. "Load unpacked" → выбрать папку `dist-extension/`
+
+## Данные рейтинга
+
+Файл `public/data/worlds_mayhem_ratings.json` содержит:
+- `version` — версия схемы данных
+- `updatedAt` — дата обновления (YYYY-MM-DD)
+- `player_competition_scores` — массив игроков с полями:
+  - `player`, `position`, `year`, `team`, `placement`
+  - `games`, `raw_stat_values`, `adjusted_competition_score`, `confidence_multiplier`
+
+Обновление данных: заменить JSON и пересобрать (`npm run build:extension`).
+
+## Тесты
+
 ```bash
-npm run dev
+npx vitest              # Запуск всех тестов
+npx vitest --coverage   # С покрытием
 ```
-Приложение откроется по адресу `http://127.0.0.1:5173`.
 
----
-
-## Команды проекта
-
-| Команда | Описание |
-|---|---|
-| `npm run dev` | Запуск локального сервера разработки с HMR |
-| `npm run build` | Компиляция TypeScript и сборка продакшен-бандла в `dist/` |
-| `npm run build:extension` | Сборка веб-приложения и сборка браузерного расширения в `dist-extension/` |
-| `npm run lint` | Быстрая проверка исходного кода через Oxlint |
-| `npm run check` | Запуск проверки логики, датасета и связности картинок (803 проверки без бандлера) |
-| `npm run preview` | Локальный предпросмотр собранной версии из `dist/` |
-
----
-
-## Установка расширения в браузер
-
-1. Выполните команду сборки расширения:
-   ```bash
-   npm run build:extension
-   ```
-   В корне проекта появится папка `dist-extension/`.
-
-2. **Google Chrome / Яндекс Браузер / Microsoft Edge / Brave**:
-   - Откройте страницу управления расширениями: `chrome://extensions/`
-   - В правом верхнем углу включите **Режим разработчика** (Developer mode).
-   - Нажмите **Загрузить распакованное расширение** (Load unpacked).
-   - Выберите папку `dist-extension`.
-
-3. **Mozilla Firefox**:
-   - Перейдите на страницу: `about:debugging#/runtime/this-firefox`
-   - Нажмите кнопку **Загрузить временное дополнение...** (Load Temporary Add-on).
-   - Выберите файл `manifest.json` внутри папки `dist-extension`.
-
-4. Откройте [https://loldle.net/worldsMayhem](https://loldle.net/worldsMayhem) — в правом верхнем углу страницы появится интерактивный оверлей помощника.
-
----
-
+Тесты покрывают: `scoring`, `fuzzy`, `teams`, `ratings` — критичную логику расчётов.

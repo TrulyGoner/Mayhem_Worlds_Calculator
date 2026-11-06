@@ -1,54 +1,28 @@
 (() => {
   const HOST_ID = "cacl-worlds-overlay";
   const DATA_URL = "worlds_mayhem_ratings.json";
-  const ROLE_WEIGHTS = { TOP: .17, JUNGLE: .20, MID: .24, ADC: .23, SUPPORT: .16 };
   const extensionApi = globalThis.browser || globalThis.chrome;
+
+  const SELECTORS = {
+    teamCard: '.worlds-mayhem .gc-team',
+    teamName: '.gc-team__name',
+    teamYear: '.gc-team__year',
+    teamPlayer: '.gc-team__player',
+    playerUnavailable: 'gc-team__player--unavailable',
+    draftMapPlayer: '.draft-map .map-player--filled img[src*="/WorldsMayhem/Players/"][alt]',
+    yearSelect: '.gc-team__year',
+    clickableCard: "button,[role=button],[class*='card'],[class*='team']",
+    utilityButton: "button,[role=button]",
+    teamInput: '.cacl-team-input',
+    teamReset: '.cacl-team-reset',
+    refresh: '.cacl-refresh',
+    playAgain: '.cacl-play-again',
+  };
   const state = { players: [], picked: [], opponent: [], history: [], stage: "", tournamentStarted: false, manualSlots: ["", "", ""], roundPicked: null, pendingTeam: null, playerBaseline: null, lastRound: "", mapKeys: "", matchStarted: false, timer: 0 };
 
-  function extensionUrl(path) {
-    try {
-      return extensionApi?.runtime?.getURL(path) || "";
-    } catch {
-      return "";
-    }
-  }
-
-  function isInvalidatedContext(error) {
-    return /Extension context invalidated/i.test(String(error?.message || error));
-  }
-
-  window.addEventListener("error", (event) => {
-    if (!isInvalidatedContext(event.error || event.message)) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }, true);
-  window.addEventListener("unhandledrejection", (event) => {
-    if (!isInvalidatedContext(event.reason)) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }, true);
-
-  const host = document.createElement("div");
-  host.id = HOST_ID;
-  const shadow = host.attachShadow({ mode: "open" });
-  const shadowStyle = document.createElement("link");
-  shadowStyle.rel = "stylesheet";
-  shadowStyle.href = extensionUrl("content.css");
-  const root = document.createElement("div");
-  shadow.append(shadowStyle, root);
-  document.documentElement.appendChild(host);
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-    }[char]));
-  }
-
-  function visibleText() {
-    return document.body?.innerText || "";
-  }
+  // Use shared functions
+  const { ROLE_WEIGHTS, calculateTeamScore, normalize, key: sharedKey } = globalThis.CaclShared || {};
   function key(player) { return `${player.name}|${player.team}|${player.year}|${player.role}`; }
-  function normalize(value) { return value.toLocaleLowerCase().replace(/[^a-zа-я0-9]/gi, ""); }
 
   function detectStage(text) {
     const value = text.toLocaleLowerCase();
@@ -68,44 +42,21 @@
   }
 
   function score(players) {
-    const byRole = new Map();
-    for (const player of players) {
-      const current = byRole.get(player.role);
-      if (!current || player.score > current.score) byRole.set(player.role, player);
-    }
-    if (!byRole.size) return 0;
-    let weighted = 0;
-    let weight = 0;
-    const ratings = [];
-    for (const [role, player] of byRole) {
-      weighted += player.score * ROLE_WEIGHTS[role];
-      weight += ROLE_WEIGHTS[role];
-      ratings.push(player.score);
-    }
-    const mean = ratings.reduce((sum, value) => sum + value, 0) / ratings.length;
-    const sorted = [...ratings].sort((a, b) => b - a);
-    const carry = Math.min(2.5,
-      .2 * Math.max(0, sorted[0] - mean) +
-      (sorted.length > 1 ? .12 * Math.max(0, sorted[1] - mean) : 0) +
-      (sorted.length > 2 ? .04 * Math.max(0, sorted[2] - mean) : 0));
-    const weak = Math.min(2,
-      .2 * Math.max(0, mean - sorted[sorted.length - 1]) +
-      (sorted.length > 1 ? .1 * Math.max(0, mean - sorted[sorted.length - 2]) : 0));
-    return weighted / weight + carry - weak;
+    return calculateTeamScore(players);
   }
 
   function gain(candidate) {
-    return score([...state.picked.filter((player) => player.role !== candidate.role), candidate]) - score(state.picked);
+    return calculateTeamScore([...state.picked.filter((player) => player.role !== candidate.role), candidate]) - calculateTeamScore(state.picked);
   }
 
   function optionGroups(text) {
-    const domGroups = [...document.querySelectorAll('.worlds-mayhem .gc-team')]
+    const domGroups = [...document.querySelectorAll(SELECTORS.teamCard)]
       .filter((card) => card.getClientRects().length > 0)
       .map((card) => {
-      const team = card.querySelector('.gc-team__name')?.textContent?.trim() || '';
-      const year = Number(card.querySelector('.gc-team__year')?.textContent || 0);
+      const team = card.querySelector(SELECTORS.teamName)?.textContent?.trim() || '';
+      const year = Number(card.querySelector(SELECTORS.teamYear)?.textContent || 0);
       if (!team || !Number.isInteger(year)) return [];
-      return [...card.querySelectorAll('.gc-team__player')].map((node) => {
+      return [...card.querySelectorAll(SELECTORS.teamPlayer)].map((node) => {
         const name = normalize(node.textContent || '');
         const role = normalize(node.querySelector('img[alt]')?.getAttribute('alt') || '');
         return state.players.find((player) => normalize(player.name) === name &&
@@ -193,9 +144,9 @@
   }
 
   function playerAtClick(target) {
-    const playerNode = target?.closest?.('.gc-team__player');
-    if (playerNode) {
-      if (playerNode.classList.contains('gc-team__player--unavailable')) return null;
+const playerNode = target?.closest?.(SELECTORS.teamPlayer);
+      if (playerNode) {
+        if (playerNode.classList.contains(SELECTORS.playerUnavailable)) return null;
       const card = playerNode.closest('.gc-team');
       const team = normalize(card?.querySelector('.gc-team__name')?.textContent || '');
       const year = Number(card?.querySelector('.gc-team__year')?.textContent || 0);
@@ -227,7 +178,7 @@
 
   function mapPickedPlayers() {
     const pageText = normalize(visibleText());
-    const images = [...document.querySelectorAll('.draft-map .map-player--filled img[src*="/WorldsMayhem/Players/"][alt]')];
+    const images = [...document.querySelectorAll(SELECTORS.draftMapPlayer)];
     const players = [];
     for (const image of images) {
       const name = image.getAttribute('alt')?.trim() || '';
@@ -304,7 +255,7 @@
 
   function updatePickedFromClick(event) {
     const target = event.target instanceof Element ? event.target : null;
-    const utilityText = target?.closest("button,[role=button]")?.textContent?.trim().toLowerCase() || "";
+    const utilityText = target?.closest(SELECTORS.utilityButton)?.textContent?.trim().toLowerCase() || "";
     if (/play again|играть снова|начать заново/i.test(utilityText)) {
       resetTournament();
       return;
@@ -323,7 +274,7 @@
       state.matchStarted = false;
       return;
     }
-    const yearNode = target?.closest?.('.gc-team__year');
+    const yearNode = target?.closest?.(SELECTORS.yearSelect);
     const yearText = yearNode?.textContent?.trim() || target?.textContent?.trim() || "";
     if (/^\d{4}$/.test(yearText)) {
       const team = teamFromElement(target, Number(yearText));
@@ -338,7 +289,7 @@
     if (directPlayer) {
       return;
     }
-    const clickable = target?.closest("button,[role=button],[class*='card'],[class*='team']");
+    const clickable = target?.closest(SELECTORS.clickableCard);
     const text = clickable?.textContent?.trim() || "";
     if (!text) return;
     const currentPool = new Set(selectedGroups(visibleText()).flat().map(key));
@@ -504,8 +455,8 @@
       if (gameOverHtml === lastHtml) return;
       lastHtml = gameOverHtml;
       root.innerHTML = gameOverHtml;
-      root.querySelector(".cacl-refresh")?.addEventListener("click", safeRender);
-      root.querySelector(".cacl-play-again")?.addEventListener("click", resetTournament);
+      root.querySelector(SELECTORS.refresh)?.addEventListener("click", safeRender);
+      root.querySelector(SELECTORS.playAgain)?.addEventListener("click", resetTournament);
       return;
     }
     if (!state.tournamentStarted && state.picked.length >= 5 && !hasStartMatch(text)) {
@@ -525,7 +476,7 @@
       if (tournamentHtml === lastHtml) return;
       lastHtml = tournamentHtml;
       root.innerHTML = tournamentHtml;
-      root.querySelector(".cacl-refresh")?.addEventListener("click", safeRender);
+      root.querySelector(SELECTORS.refresh)?.addEventListener("click", safeRender);
       return;
     }
     if (state.stage && detectedStage && state.stage !== detectedStage) {
@@ -588,8 +539,8 @@
       }
       throw error;
     }
-    root.querySelector(".cacl-refresh")?.addEventListener("click", safeRender);
-    root.querySelector(".cacl-play-again")?.addEventListener("click", () => {
+    root.querySelector(SELECTORS.refresh)?.addEventListener("click", safeRender);
+    root.querySelector(SELECTORS.playAgain)?.addEventListener("click", () => {
       lastHtml = "";
       state.picked = [];
       state.roundPicked = null;
@@ -599,12 +550,12 @@
       state.matchStarted = false;
       safeRender();
     });
-    root.querySelectorAll(".cacl-team-input").forEach((input) => input.addEventListener("change", (event) => {
+    root.querySelectorAll(SELECTORS.teamInput).forEach((input) => input.addEventListener("change", (event) => {
       const element = event.currentTarget;
       state.manualSlots[Number(element.dataset.slot)] = element.value.trim();
       setTimeout(safeRender, 0);
     }));
-    root.querySelectorAll(".cacl-team-reset").forEach((button) => button.addEventListener("click", () => {
+    root.querySelectorAll(SELECTORS.teamReset).forEach((button) => button.addEventListener("click", () => {
       state.manualSlots[Number(button.dataset.reset)] = "";
       setTimeout(safeRender, 0);
     }));
